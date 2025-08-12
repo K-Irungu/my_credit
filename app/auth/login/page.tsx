@@ -10,7 +10,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-  
+
   // Clear inputs when loading finishes (isLoading changes from true to false)
   useEffect(() => {
     if (!isLoading) {
@@ -48,13 +48,15 @@ const Login = () => {
 
         setTimeout(() => {
           setIsLoading(false);
-        }, 5500);
+        }, 4500);
         return;
       }
 
       // --- Handle successful login ---
-      toast.success("Login successful!");
-      router.push("/admin");
+      setTimeout(() => {
+        toast.success(data.message || "Login failed");
+        router.push("/admin");
+      }, 4500);
     } catch (error) {
       // --- Handle network or unexpected errors ---
       toast.error("Something went wrong. Please try again.");
@@ -65,6 +67,9 @@ const Login = () => {
 
   return (
     <main className="flex items-center justify-center py-10 px-2 h-[60vh]">
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/20 bg-opacity-1  z-40" />
+      )}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6">
         {/* Logo or title */}
         <div className="text-center mb-4">
@@ -84,6 +89,7 @@ const Login = () => {
           <input
             type="email"
             id="email"
+            disabled={isLoading}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-gray-900 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400 text-sm"
@@ -95,6 +101,7 @@ const Login = () => {
           <input
             type="password"
             id="password"
+            disabled={isLoading}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-gray-900 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400 text-sm"
@@ -102,20 +109,7 @@ const Login = () => {
             required
           />
 
-          {/* Submit button */}
-          {/* <button
-            type="submit"
-            className="
-    w-full bg-[#FAD41A] text-[#3C3C3C] 
-    hover:text-[#FAD41A] hover:bg-[#3C3C3C] 
-    font-bold py-3 rounded-md 
-    transition duration-400 ease-in-out 
-    active:scale-90 cursor-pointer
-    transform-gpu
-    "
-          >
-            Sign In
-          </button> */}
+          {/* Login Button */}
 
           <button
             type="submit"

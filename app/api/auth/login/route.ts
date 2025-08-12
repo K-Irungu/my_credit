@@ -24,8 +24,8 @@ export async function POST(req: Request) {
         status: result.status,
         message: result.message,
         data: result.data,
-
-      })
+      }),
+      { status: result.status }
     );
     
   } catch (error) {

@@ -325,3 +325,53 @@
 {"level":"info","message":"Email sent","messageId":"<0198abf7-9779-03ad-2797-52971027580d@whistleblow.mycredit.co.ke>","timestamp":"2025-08-12T16:54:50.633Z"}
 {"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T16:55:33.092Z"}
 {"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:55:58.881Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:59:47.252Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:00:04.070Z"}
+{"email":"kirungu481@gmail.com","fullName":" Irungu","level":"info","message":"Sign up for admin called","phoneNumber":"0790154308","timestamp":"2025-08-12T17:02:18.326Z"}
+{"email":"kirungu481@gmail.com","fullName":" Irungu","level":"warn","message":"Attempt to create a second admin blocked","phoneNumber":"0790154308","timestamp":"2025-08-12T17:02:18.363Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:02:27.563Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:02:31.767Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:02:41.009Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:03:27.418Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:03:43.052Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:05:15.792Z"}
+{"level":"warn","message":"Login failed: admin not found (kirungu@gmd)","timestamp":"2025-08-12T17:05:37.108Z"}
+{"level":"warn","message":"Login failed: admin not found (asas@f.com)","timestamp":"2025-08-12T17:06:00.275Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:06:14.749Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:06:21.759Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:06:26.699Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:06:52.303Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:07:59.658Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:08:17.251Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:08:45.121Z"}
+{"level":"warn","message":"Login failed: admin not found (kirungu48@gmail.com)","timestamp":"2025-08-12T17:09:46.468Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:10:03.666Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:10:36.088Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:11:57.396Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:13:05.531Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:13:41.246Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:13:54.958Z"}
+{"level":"warn","message":"Login failed: admin not found (kieungu481@gmail.com)","timestamp":"2025-08-12T17:14:14.482Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:14:28.941Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:14:56.773Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:15:15.600Z"}
+{"level":"warn","message":"Login failed: admin not found (kirungu@h)","timestamp":"2025-08-12T17:16:05.617Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:16:36.776Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:16:56.467Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:18:08.540Z"}
+{"level":"warn","message":"Login failed: admin not found (kirungu481@gmaill.com)","timestamp":"2025-08-12T17:18:36.818Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:19:04.273Z"}
+{"level":"warn","message":"Login failed: admin not found (kirungu@j)","timestamp":"2025-08-12T17:19:18.607Z"}
+{"level":"warn","message":"Login failed: admin not found (ascasc@acsasc)","timestamp":"2025-08-12T17:19:28.333Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:20:14.260Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:20:26.933Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:20:44.239Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:21:03.289Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T17:22:30.429Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:23:24.078Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:24:09.427Z"}
+{"level":"warn","message":"Login failed: admin not found (dev@admin.com)","timestamp":"2025-08-12T17:24:40.219Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:24:49.366Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:26:02.222Z"}
+{"level":"warn","message":"Login failed: admin not found (p@23.com)","timestamp":"2025-08-12T17:26:21.928Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T17:26:29.827Z"}

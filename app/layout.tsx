@@ -39,7 +39,7 @@ export default function RootLayout({
           containerClassName="p-12"
           reverseOrder={false}
           toastOptions={{
-            duration: 5000, // ⏳ Toast will stay for 5 seconds
+            duration: 4000, // ⏳ Toast will stay for 5 seconds
 
             className:
               "text-base font-bold uppercase px-6 py-5 rounded-lg shadow-lg",
