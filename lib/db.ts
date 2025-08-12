@@ -1,5 +1,13 @@
 import mongoose, { Mongoose } from 'mongoose';
 
+// Fix the red underlines by declaring the custom property on the global object
+declare global {
+  var _mongoose: {
+    conn: Mongoose | null;
+    promise: Promise<Mongoose> | null;
+  };
+}
+
 const MONGODB_URI = process.env.MONGODB_URI;
 
 // Throw an error immediately if the URI is not set, as it's a critical dependency.

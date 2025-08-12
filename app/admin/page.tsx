@@ -12,12 +12,15 @@ const AdminPage = () => {
     setIsLoading(true);
 
     try {
+      const browser = navigator.userAgent;
+
       const response = await fetch("/api/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include", // send cookies (including your token cookie)
+        body: JSON.stringify({ browser }),
       });
       const data = await response.json();
 

@@ -3,9 +3,18 @@ import { logout } from "../../../../controllers/auth/logoutController";
 import logger from "@/lib/logger";
 import { parse } from "cookie";
 
-
 export async function POST(req: Request) {
   try {
+    const { browser } = await req.json();
+
+    const ipAddress =
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+
+    // Define the API endpoint for audit trail
+    const endpoint = "/api/auth/logout";
+
     // 1) Extract token from cookies
     const cookieHeader = req.headers.get("cookie") || "";
     const cookies = parse(cookieHeader);
@@ -19,7 +28,11 @@ export async function POST(req: Request) {
     }
 
     // 2) Clear the admin's sessionToken and deviceId
-    const result = await logout(token);
+    const result = await logout(token, {
+      browser,
+      ipAddress,
+      endpoint
+    });
 
     // 3) Return the result of the deleting of  sessionToken and deviceId
     return NextResponse.json(

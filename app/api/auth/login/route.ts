@@ -4,9 +4,9 @@ import { serialize } from "cookie";
 
 export async function POST(req: Request) {
   try {
-    const { email, password, deviceId } = await req.json();
+    const { email, password, deviceId, browser } = await req.json();
 
-    if (!email || !password || !deviceId) {
+    if (!email || !password || !deviceId ||!browser) {
       return NextResponse.json(
         {
           status: 400,
@@ -17,7 +17,21 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = await login(email, password, deviceId);
+    // Extract IP address from headers or connection info
+    // Note: 'req' is a native Request object, so to access headers:
+    const ipAddress =
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+
+    // Define the API endpoint for audit trail
+    const endpoint = "/api/auth/login";
+
+    const result = await login(email, password, deviceId, {
+      browser,
+      ipAddress,
+      endpoint,
+    });
 
     if (!result.data) {
       // Handle no data case or throw error
@@ -52,8 +66,6 @@ export async function POST(req: Request) {
         },
       }
     );
-
-    
   } catch (error) {
     console.error("Login route error:", error);
     return NextResponse.json(

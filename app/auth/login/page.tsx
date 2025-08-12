@@ -22,7 +22,6 @@ const Login = () => {
     setDeviceId(storedDeviceId);
   }, []);
 
-
   // Clear inputs when loading finishes (isLoading changes from true to false)
   useEffect(() => {
     if (!isLoading) {
@@ -43,11 +42,13 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      const browser = navigator.userAgent;
+
       // --- Make login request ---
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, deviceId }), 
+      body: JSON.stringify({ email, password, deviceId, browser }),
       });
 
       const data = await response.json();
