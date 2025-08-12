@@ -3,7 +3,7 @@ import { verifyAuthToken } from "../../utils/auth";
 import Admin from "@/models/admin";
 import logger from "@/lib/logger";
 
-export async function deleteSession(token: string) {
+export async function logout(token: string) {
   try {
     // 1) Check if the token is valid
     const verified = await verifyAuthToken(token);
@@ -34,13 +34,15 @@ export async function deleteSession(token: string) {
       };
     }
 
-    // Clear the session token to effectively log out the user
+    // Clear the session token and deviceId to effectively log out the user
+    logger.info(`Logging out admin: ${admin.fullName} from device: ${admin.deviceId}`);
     admin.sessionToken = null;
+    admin.deviceId = null
     await admin.save();
-
-    logger.info(`Admin logged out successfully: ${admin.fullName}`);
-
+    
+    
     // --- Return success response ---
+    logger.info(`Admin: ${admin.fullName} successfully logged out. from device.`);
     return {
       status: 200,
       message: "Logout successful",

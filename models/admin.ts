@@ -8,7 +8,8 @@ export interface IAdmin extends Document {
   verificationExpiration: Date;
   lastLogin?: Date;
   phoneNumber: string;
-  sessionToken: string; // <-- new field here
+  sessionToken: string;
+  deviceId: string;
 }
 
 const AdminSchema: Schema<IAdmin> = new Schema(
@@ -46,6 +47,10 @@ const AdminSchema: Schema<IAdmin> = new Schema(
     },
     sessionToken: {
       type: String,
+    },
+    deviceId: {
+      type: String,
+      unique: true
     }
   },
   {

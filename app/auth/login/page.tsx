@@ -8,8 +8,20 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [deviceId, setDeviceId] = useState("");
 
   const router = useRouter();
+
+  // Generate or load deviceId once on component mount
+  useEffect(() => {
+    let storedDeviceId = localStorage.getItem("deviceId");
+    if (!storedDeviceId) {
+      storedDeviceId = crypto.randomUUID(); // generate UUID (modern browsers)
+      localStorage.setItem("deviceId", storedDeviceId);
+    }
+    setDeviceId(storedDeviceId);
+  }, []);
+
 
   // Clear inputs when loading finishes (isLoading changes from true to false)
   useEffect(() => {
@@ -35,7 +47,7 @@ const Login = () => {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, deviceId }), 
       });
 
       const data = await response.json();

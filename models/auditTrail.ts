@@ -8,6 +8,7 @@ export interface AuditTrailDocument extends Document {
   endpoint: string;
   timestamp: Date;
   dataInTransit?: any;
+  deviceId: string;
   userDetails: {
     userId: mongoose.Types.ObjectId;
     model: "Admin" | "Reporter";
@@ -25,6 +26,7 @@ const auditTrailSchema = new Schema<AuditTrailDocument>(
     endpoint: { type: String, required: true, trim: true },
     timestamp: { type: Date, default: Date.now },
     dataInTransit: { type: Schema.Types.Mixed, required: false },
+    deviceId: {type: String, required: true},
 
     userDetails: {
       userId: {

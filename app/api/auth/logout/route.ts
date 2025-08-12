@@ -1,23 +1,27 @@
 import { NextResponse } from "next/server";
-import { deleteSession } from "../../../../controllers/auth/logoutController";
+import { logout } from "../../../../controllers/auth/logoutController";
 import logger from "@/lib/logger";
+import { parse } from "cookie";
+
 
 export async function POST(req: Request) {
   try {
-    // 1) Extract bearer token from header
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
+    // 1) Extract token from cookies
+    const cookieHeader = req.headers.get("cookie") || "";
+    const cookies = parse(cookieHeader);
+    const token = cookies.token;
+
+    if (!token) {
       return NextResponse.json(
-        { status: 401, message: "Authorization token missing", data: [] },
+        { status: 401, message: "Authorization token missing", data: null },
         { status: 401 }
       );
     }
-    const token = authHeader.split(" ")[1];
 
-    // 2) Clear the admin's sessionToken
-    const result = await deleteSession(token);
+    // 2) Clear the admin's sessionToken and deviceId
+    const result = await logout(token);
 
-    // 3) Return the result of the deleting of session
+    // 3) Return the result of the deleting of  sessionToken and deviceId
     return NextResponse.json(
       { status: result.status, message: result.message, data: result.data },
       { status: result.status }

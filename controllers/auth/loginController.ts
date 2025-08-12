@@ -2,10 +2,12 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { connectToDB } from "@/lib/db";
 import Admin from "@/models/admin";
+import AuditTrail from "@/models/auditTrail";
 import logger from "@/lib/logger";
 
 
-export async function login(email: string, password: string) {
+
+export async function login(email: string, password: string, deviceId: string) {
   const JWT_SECRET = process.env.JWT_SECRET;
 
   if (!JWT_SECRET) {
@@ -25,7 +27,17 @@ export async function login(email: string, password: string) {
       };
     }
 
-    // 2) Check password
+    // 2) Check if logged in on a different device
+    if (admin.sessionToken && admin.deviceId && admin.deviceId !== deviceId) {
+      logger.warn(`Login attempt on different device for admin: ${email}`);
+      return {
+        status: 403,
+        message: "You are already logged in on another device.",
+        data: null,
+      };
+    }
+
+    // 3) Compare passwords
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
       logger.warn(`Login failed: wrong password (${email})`);
@@ -36,26 +48,29 @@ export async function login(email: string, password: string) {
       };
     }
 
-    // 3) Create JWT token
+    // 4) Create JWT token
     const token = jwt.sign(
       { id: admin._id, email: admin.email, role: "admin" },
       JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // 4) Save the token to the admin's sessionToken field
+    // 5) Update session token and deviceId
+    admin.lastLogin = new Date();
     admin.sessionToken = token;
+    admin.deviceId = deviceId;
+
     await admin.save();
 
-    logger.info(`Login successful for admin: ${admin.fullName}`);
+    logger.info(
+      `Login successful for admin: ${admin.fullName} on device: ${deviceId}`
+    );
 
     return {
       status: 200,
       message: "Login successful.",
       data: { fullName: admin.fullName, token },
     };
-
-
   } catch (error) {
     logger.error("Login error", error);
     return {
