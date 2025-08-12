@@ -8,6 +8,7 @@ export interface IAdmin extends Document {
   verificationExpiration: Date;
   lastLogin?: Date;
   phoneNumber: string;
+  sessionToken: string; // <-- new field here
 }
 
 const AdminSchema: Schema<IAdmin> = new Schema(
@@ -15,18 +16,19 @@ const AdminSchema: Schema<IAdmin> = new Schema(
     fullName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
-      trim:true
+      trim: true,
     },
     phoneNumber: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -34,16 +36,17 @@ const AdminSchema: Schema<IAdmin> = new Schema(
     },
     verifyOtp: {
       type: String,
-      required: true,
     },
     verificationExpiration: {
       type: Date,
-      required: true,
     },
     lastLogin: {
       type: Date,
       default: null,
     },
+    sessionToken: {
+      type: String,
+    }
   },
   {
     timestamps: true,
@@ -51,6 +54,5 @@ const AdminSchema: Schema<IAdmin> = new Schema(
 );
 
 const Admin =
-  mongoose.models.Admin || 
-  mongoose.model<IAdmin>("Admin", AdminSchema);
+  mongoose.models.Admin || mongoose.model<IAdmin>("Admin", AdminSchema);
 export default Admin;

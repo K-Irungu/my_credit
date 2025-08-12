@@ -1,39 +1,44 @@
-import mongoose from 'mongoose';
-import logger from './logger';
+import mongoose, { Mongoose } from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI;
+
+// Throw an error immediately if the URI is not set, as it's a critical dependency.
 if (!MONGODB_URI) {
-    logger.error('MONGODB_URI not defined');
     throw new Error('Please define the MONGODB_URI environment variable in .env');
 }
 
-declare global {
-    var _mongoose: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null };
+// Global cache for the connection object to prevent creating multiple connections in development.
+let cached = global._mongoose;
+
+if (!cached) {
+    cached = global._mongoose = { conn: null, promise: null };
 }
 
-const cached = globalThis._mongoose || { conn: null, promise: null };
-globalThis._mongoose = cached;
-
-export async function connectToDB(): Promise<typeof mongoose> {
+export async function connectToDB(): Promise<Mongoose> {
+    // If a connection already exists, return it immediately.
     if (cached.conn) {
-        logger.debug('Using cached MongoDB connection');
         return cached.conn;
     }
-    logger.info('Connecting to MongoDB', { uri: MONGODB_URI });
+
+    // If a connection promise is not yet cached, create it.
     if (!cached.promise) {
+        const opts = {
+            bufferCommands: false,
+        };
+
         cached.promise = mongoose
-            // @ts-ignore
-            .connect(MONGODB_URI)
-            .then((m) => {
-                logger.info('MongoDB connection established');
+            .connect(MONGODB_URI, opts)
+            .then(m => {
+                cached.conn = m;
                 return m;
             })
-            .catch((err) => {
-                logger.error('MongoDB connection error', err);
-                throw err;
+            .catch(error => {
+                // Clear the promise if connection fails to allow retries.
+                cached.promise = null;
+                throw error;
             });
     }
-    cached.conn = await cached.promise;
-    return cached.conn;
-}
 
+    // Await the promise to get the connection.
+    return cached.promise;
+}

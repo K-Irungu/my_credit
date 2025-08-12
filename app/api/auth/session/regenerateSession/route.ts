@@ -1,6 +1,7 @@
+
 import { NextResponse } from "next/server";
-import { deleteSession } from "../../../../controllers/auth/logoutController";
-import logger from "@/lib/logger";
+import { regenerateSession } from "../../../../../controllers/auth/session/regenerateSessionController";
+
 
 export async function POST(req: Request) {
   try {
@@ -14,20 +15,23 @@ export async function POST(req: Request) {
     }
     const token = authHeader.split(" ")[1];
 
-    // 2) Clear the admin's sessionToken
-    const result = await deleteSession(token);
+    // 2) Regenerate session
+    const result = await regenerateSession(token);
 
-    // 3) Return the result of the deleting of session
+    // 3) Return session information
     return NextResponse.json(
-      { status: result.status, message: result.message, data: result.data },
+      {
+        status: result.status,
+        message: result.message,
+        data: result.data,
+      },
       { status: result.status }
     );
   } catch (error) {
-    logger.error("Logout error", error);
-    return {
-      status: 500,
-      message: "Internal server error",
-      data: null,
-    };
+
+    return NextResponse.json(
+      { status: 500, message: "Internal Server Error", data: null },
+      { status: 500 }
+    );
   }
 }

@@ -26,7 +26,7 @@ const ReporterSchema: Schema<IReporter> = new Schema(
       type: String,
       required: true,
       lowercase: true,
-      unique: true,
+      // unique: true,
       trim: true,
     },
     phoneNumber: {
