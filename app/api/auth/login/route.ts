@@ -18,12 +18,13 @@ export async function POST(req: Request) {
 
     const result = await login(email, password);
 
+
     return new NextResponse(
       JSON.stringify({
         status: result.status,
         message: result.message,
         data: result.data,
-        admin: result.admin
+
       })
     );
     

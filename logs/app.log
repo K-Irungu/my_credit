@@ -281,3 +281,47 @@
 {"level":"info","message":"Session regenerated successfully for admin id: 689b5389f29a36b6b2762363","timestamp":"2025-08-12T14:48:25.678Z"}
 {"level":"warn","message":"Session check failed: Invalid session token","timestamp":"2025-08-12T14:48:29.004Z"}
 {"level":"info","message":"Session validated for user: kirungu481@gmail.com","timestamp":"2025-08-12T14:53:26.049Z"}
+{"email":"kirungu481@gmail.com","fullName":" Irungu","level":"info","message":"Sign up for admin called","phoneNumber":"0790154308","timestamp":"2025-08-12T16:14:45.332Z"}
+{"adminId":"689b68759f13ed11689318d7","fullName":" Irungu","level":"info","message":"New Admin signed up successfully","timestamp":"2025-08-12T16:14:45.549Z"}
+{"level":"info","message":"Sending email","subject":"Welcome to MyCredit Whistleblower Portal!","timestamp":"2025-08-12T16:14:45.549Z","to":"kirungu481@gmail.com"}
+{"level":"info","message":"Email sent","messageId":"<3acb5475-7ac6-388b-07b7-5b8f4ff6732c@whistleblow.mycredit.co.ke>","timestamp":"2025-08-12T16:14:52.859Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:16:15.753Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:16:50.609Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:17:10.952Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:26:11.318Z"}
+{"level":"warn","message":"Login failed: admin not found (kidca@g.com)","timestamp":"2025-08-12T16:26:45.120Z"}
+{"level":"warn","message":"Login failed: admin not found (acasc@f.com)","timestamp":"2025-08-12T16:28:02.026Z"}
+{"level":"warn","message":"Login failed: admin not found (k@g.com)","timestamp":"2025-08-12T16:29:17.147Z"}
+{"level":"warn","message":"Login failed: admin not found (kirungu@gmail.com)","timestamp":"2025-08-12T16:30:15.039Z"}
+{"level":"warn","message":"Login failed: admin not found (ksdc@g.com)","timestamp":"2025-08-12T16:31:19.159Z"}
+{"level":"warn","message":"Login failed: admin not found (kiru@gmail.com)","timestamp":"2025-08-12T16:33:47.644Z"}
+{"level":"warn","message":"Login failed: admin not found (kasc@d.com)","timestamp":"2025-08-12T16:34:39.361Z"}
+{"level":"warn","message":"Login failed: admin not found (kiru@gmail.com)","timestamp":"2025-08-12T16:35:23.037Z"}
+{"level":"warn","message":"Login failed: admin not found (asfdas@gmail.com)","timestamp":"2025-08-12T16:37:05.262Z"}
+{"level":"warn","message":"Login failed: admin not found (asasd@gm.com)","timestamp":"2025-08-12T16:37:32.202Z"}
+{"level":"warn","message":"Login failed: admin not found (k@g.com)","timestamp":"2025-08-12T16:38:10.802Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:40:32.148Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:40:45.234Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:40:59.876Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:41:13.940Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:41:32.018Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:41:47.031Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:41:52.600Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:42:08.423Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:42:27.069Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:42:43.953Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:42:54.105Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:46:07.623Z"}
+{"level":"warn","message":"Login failed: admin not found (kit@f.com)","timestamp":"2025-08-12T16:46:13.413Z"}
+{"level":"warn","message":"Login failed: admin not found (kas@f.com)","timestamp":"2025-08-12T16:47:00.890Z"}
+{"level":"warn","message":"Login failed: admin not found (asx@j)","timestamp":"2025-08-12T16:48:44.158Z"}
+{"level":"warn","message":"Login failed: admin not found (sdcsc@d)","timestamp":"2025-08-12T16:49:13.191Z"}
+{"level":"warn","message":"Login failed: admin not found (h@gmailcom)","timestamp":"2025-08-12T16:51:15.928Z"}
+{"level":"warn","message":"Login failed: admin not found (d@gcom)","timestamp":"2025-08-12T16:51:36.918Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:54:11.582Z"}
+{"email":"kirungu481@gmail.com","fullName":" Irungu","level":"info","message":"Sign up for admin called","phoneNumber":"0790154308","timestamp":"2025-08-12T16:54:43.773Z"}
+{"adminId":"689b71d3785462a172ff247c","fullName":" Irungu","level":"info","message":"New Admin signed up successfully","timestamp":"2025-08-12T16:54:43.953Z"}
+{"level":"info","message":"Sending email","subject":"Welcome to MyCredit Whistleblower Portal!","timestamp":"2025-08-12T16:54:43.953Z","to":"kirungu481@gmail.com"}
+{"level":"info","message":"Email sent","messageId":"<0198abf7-9779-03ad-2797-52971027580d@whistleblow.mycredit.co.ke>","timestamp":"2025-08-12T16:54:50.633Z"}
+{"level":"info","message":"Login successful for admin: Irungu","timestamp":"2025-08-12T16:55:33.092Z"}
+{"level":"warn","message":"Login failed: wrong password (kirungu481@gmail.com)","timestamp":"2025-08-12T16:55:58.881Z"}

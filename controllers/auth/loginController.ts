@@ -20,9 +20,8 @@ export async function login(email: string, password: string) {
       logger.warn(`Login failed: admin not found (${email})`);
       return {
         status: 401,
-        message: "Invalid credentials",
+        message: "Login failed: Invalid credentials",
         data: null,
-        cookie: null,
       };
     }
 
@@ -32,9 +31,8 @@ export async function login(email: string, password: string) {
       logger.warn(`Login failed: wrong password (${email})`);
       return {
         status: 401,
-        message: "Invalid credentials",
+        message: "Login failed: Invalid credentials",
         data: null,
-        cookie: null,
       };
     }
 
@@ -49,18 +47,21 @@ export async function login(email: string, password: string) {
     admin.sessionToken = token;
     await admin.save();
 
+    logger.info(`Login successful for admin: ${admin.fullName}`);
+
     return {
       status: 200,
-      message: "Login successful",
+      message: "Login successful.",
       data: { fullName: admin.fullName, token },
     };
+
+
   } catch (error) {
     logger.error("Login error", error);
     return {
       status: 500,
       message: "Internal Server Error",
       data: null,
-      cookie: null,
     };
   }
 }

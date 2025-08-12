@@ -35,7 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
       >
         <Toaster
-          position="top-center"
+          position="top-right"
           containerClassName="p-12"
           reverseOrder={false}
           toastOptions={{
@@ -72,3 +72,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+
