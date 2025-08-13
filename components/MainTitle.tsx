@@ -6,7 +6,8 @@ const MainTitle = () => {
   const pathname = usePathname();
 
   return (
-    <>{ pathname && pathname!=="/admin" &&
+    <>
+    { pathname && pathname!=="/admin" &&
       <header className="bg-[#ffde17] py-4 shadow-md">
         <div className="w-full container mx-auto">
           <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 py-12 pl-5 sm:pl-5">

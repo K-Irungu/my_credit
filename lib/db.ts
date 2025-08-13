@@ -34,8 +34,9 @@ export async function connectToDB(): Promise<Mongoose> {
             bufferCommands: false,
         };
 
+        // 🚨 Corrected Line: Add the non-null assertion operator (!)
         cached.promise = mongoose
-            .connect(MONGODB_URI, opts)
+            .connect(MONGODB_URI!, opts)
             .then(m => {
                 cached.conn = m;
                 return m;

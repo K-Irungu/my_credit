@@ -20,6 +20,7 @@ interface MenuItem {
   path?: string;
   action?: () => void;
   danger?: boolean;
+  special?: boolean; // Add this line
 }
 
 export default function Sidemenu() {
@@ -63,8 +64,8 @@ export default function Sidemenu() {
     { name: "Settings", icon: Cog6ToothIcon, path: "/admin/settings" },
   ];
 
-  const MenuButton = ({ item }: { item: MenuItem }) => (
-   <button
+const MenuButton = ({ item }: { item: MenuItem }) => (
+  <button
     onClick={() => {
       if (item.action) {
         item.action();
@@ -73,18 +74,21 @@ export default function Sidemenu() {
       }
     }}
     className={`cursor-pointer flex items-center gap-3 w-full text-left transition-all duration-200 rounded-lg
-      ${open ? "px-4 py-3" : "px-0 py-3 justify-center"} // Apply conditional padding and alignment
-      ${item.danger
-        ? "hover:bg-red-600 text-red-600"
-        : "hover:bg-[#ffde17] hover:text-black"}
-      text-black font-medium`}
+      ${open ? "px-4 py-3" : "px-0 py-3 justify-center"}
+      ${
+        item.danger
+          ? "hover:bg-red-600 text-red-600"
+          : item.special
+          ? "bg-black text-white hover:bg-[#ffde17] hover:text-black" // New styles for the Logout button
+          : "hover:bg-[#ffde17] hover:text-black text-black"
+      }
+      font-medium`}
     aria-label={item.name}
   >
     <item.icon className="h-5 w-5 shrink-0" />
     {open && <span className="truncate">{item.name}</span>}
   </button>
-  );
-
+);
   return (
     <aside
       className={`h-[calc(100vh-64px)] bg-white border-r border-gray-200 text-black flex flex-col transition-all duration-300 ${
@@ -115,17 +119,17 @@ export default function Sidemenu() {
         ))}
       </nav>
 
-      {/* Logout Button - Fixed at bottom */}
-      <div className="p-3 border-t border-gray-200 ">
-        <MenuButton
-          item={{
-            name: "Logout",
-            icon: ArrowLeftOnRectangleIcon,
-            action: handleLogout,
-            // danger: true,
-          }}
-        />
-      </div>
+  {/* Logout Button - Fixed at bottom */}
+<div className="p-3 border-t border-gray-200 ">
+  <MenuButton
+    item={{
+      name: "Logout",
+      icon: ArrowLeftOnRectangleIcon,
+      action: handleLogout,
+      special: true, // Add this property to trigger the new styles
+    }}
+  />
+</div>
 
       {/* Loading overlay */}
       {isLoading && (

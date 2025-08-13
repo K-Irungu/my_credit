@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Sidemenu from "@/components/Sidemenu";
 
-const AdminPage = () => {
+const Dashboard = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,9 +58,10 @@ const AdminPage = () => {
         <div className="fixed inset-0 bg-black/20 bg-opacity-1  z-40" />
       )}
 
+      Dashboard
+
 
       {/* Sidemenu */}
-      <Sidemenu />
 
 
 
@@ -106,4 +107,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default Dashboard;

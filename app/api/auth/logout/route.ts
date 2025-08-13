@@ -41,10 +41,10 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     logger.error("Logout error", error);
-    return {
+    return NextResponse.json({
       status: 500,
       message: "Internal server error",
       data: null,
-    };
+    });
   }
 }
