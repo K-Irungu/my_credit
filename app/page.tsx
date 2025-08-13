@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react";
 
 const mainPage = () => {
@@ -26,18 +24,24 @@ const mainPage = () => {
           </p>
           <ul className="list-disc list-inside text-sm text-gray-700  mb-6 space-y-1">
             <li>Details of the implicated personel</li>
-            <li>The nature and details of the malpractice, including any supporting evidence</li>
-            <li>Your personal details, including an indication of whether or not you would want feedback on your submission</li>
+            <li>
+              The nature and details of the malpractice, including any
+              supporting evidence
+            </li>
+            <li>
+              Your personal details, including an indication of whether or not
+              you would want feedback on your submission
+            </li>
           </ul>
           <p className="text-sm text-gray-700 leading-relaxed mb-6">
             Once submitted, our compliance team will review your report promptly
             and take the necessary actions to address and resolve the matter.
           </p>
-           {/* Fill Form Button */}
+          {/* Fill Form Button */}
           <div className="flex justify-end ">
             <a
               href="/form"
-                className="cursor-pointer hover:bg-[#58595d] hover:text-[#ffde17] w-full sm:w-auto text-center sm:text-left inline-block bg-[#ffde17] text-gray-900 font-semibold text-sm px-6 py-3 rounded-md shadow-md  transition duration-300"
+              className="cursor-pointer hover:bg-[#58595d] hover:text-[#ffde17] w-full sm:w-auto text-center sm:text-left inline-block bg-[#ffde17] text-gray-900 font-semibold text-sm px-6 py-3 rounded-md shadow-md  transition duration-300"
             >
               Fill Whistleblower Form
             </a>

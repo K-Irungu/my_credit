@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import Sidemenu from "@/components/Sidemenu";
 
 const AdminPage = () => {
   const router = useRouter();
@@ -52,6 +53,7 @@ const AdminPage = () => {
 
   return (
     <div className="p-4">
+      <Sidemenu />
       {isLoading && (
         <div className="fixed inset-0 bg-black/20 bg-opacity-1  z-40" />
       )}

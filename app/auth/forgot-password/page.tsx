@@ -4,9 +4,8 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-const Login = () => {
+const forgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [deviceId, setDeviceId] = useState("");
 
@@ -26,7 +25,6 @@ const Login = () => {
   useEffect(() => {
     if (!isLoading) {
       setEmail("");
-      setPassword("");
     }
   }, [isLoading]);
 
@@ -34,7 +32,7 @@ const Login = () => {
     e.preventDefault();
 
     // --- Validate input ---
-    if (!email || !password) {
+    if (!email) {
       toast.error("Ensure all fields are filled!");
       return;
     }
@@ -44,11 +42,11 @@ const Login = () => {
     try {
       const browser = navigator.userAgent;
 
-      // --- Make login request ---
-      const response = await fetch("/api/auth/login", {
+      // --- Make forgot-password request ---
+      const response = await fetch("/api/auth/password/forgotPassword", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, deviceId, browser }),
+        body: JSON.stringify({ email, deviceId, browser }),
       });
 
       const data = await response.json();
@@ -92,11 +90,11 @@ const Login = () => {
             className="mx-auto h-13 mb-2"
           />
           <p className="text-gray-500 text-sm text-left">
-            Enter admin credentials to access the dashboard
+            Enter email address to receive password reset link
           </p>
         </div>
 
-        {/* Login form */}
+        {/* Password reset form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <input
@@ -110,20 +108,7 @@ const Login = () => {
             required
           />
 
-          {/* Password */}
-          <input
-            type="password"
-            id="password"
-            disabled={isLoading}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-gray-900 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400 text-sm"
-            placeholder="Password"
-            required
-          />
-
-          {/* Login Button */}
-
+          {/* Send Reset Link Button */}
           <button
             type="submit"
             disabled={isLoading}
@@ -159,15 +144,15 @@ const Login = () => {
                 Loading...
               </>
             ) : (
-              "Sign In"
+              "Send Reset Link"
             )}
           </button>
         </form>
 
         {/* Footer links */}
         <div className="mt-6 text-right text-sm text-[#58595d]">
-          <a href="/auth/forgot-password" className="text-[#58595d] hover:underline">
-            Forgot your password?
+          <a href="/auth/login" className="text-[#58595d] hover:underline">
+            Already have an account?
           </a>
         </div>
       </div>
@@ -175,4 +160,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default forgotPassword;
