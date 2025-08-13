@@ -51,7 +51,7 @@ const forgotPassword = () => {
 
       const data = await response.json();
 
-      // --- Handle unsuccessful login ---
+      // --- Handle unsuccessful  ---
       if (data.status !== 200) {
         setTimeout(() => {
           toast.error(data.message || "Login failed");
@@ -63,10 +63,10 @@ const forgotPassword = () => {
         return;
       }
 
-      // --- Handle successful login ---
+      // --- Handle success ---
       setTimeout(() => {
         toast.success(data.message || "Login failed");
-        router.push("/admin");
+        router.push("/auth/login");
       }, 4500);
     } catch (error) {
       // --- Handle network or unexpected errors ---

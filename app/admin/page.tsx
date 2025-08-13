@@ -9,57 +9,63 @@ const AdminPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogout = async () => {
-    setIsLoading(true);
+  // const handleLogout = async () => {
+  //   setIsLoading(true);
 
-    try {
-      const browser = navigator.userAgent;
+  //   try {
+  //     const browser = navigator.userAgent;
 
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // send cookies (including your token cookie)
-        body: JSON.stringify({ browser }),
-      });
-      const data = await response.json();
+  //     const response = await fetch("/api/auth/logout", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include", // send cookies (including your token cookie)
+  //       body: JSON.stringify({ browser }),
+  //     });
+  //     const data = await response.json();
 
-      // --- Handle unsuccessful logout ---
-      if (data.status !== 200) {
-        setTimeout(() => {
-          toast.error(data.message || "Login failed");
-        }, 500);
+  //     // --- Handle unsuccessful logout ---
+  //     if (data.status !== 200) {
+  //       setTimeout(() => {
+  //         toast.error(data.message || "Login failed");
+  //       }, 500);
 
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 4500);
+  //       setTimeout(() => {
+  //         setIsLoading(false);
+  //       }, 4500);
 
-        return;
-      }
+  //       return;
+  //     }
 
-      // --- Handle successful logout ---
-      localStorage.removeItem("deviceId");
+  //     // --- Handle successful logout ---
+  //     localStorage.removeItem("deviceId");
 
-      setTimeout(() => {
-        toast.success(data.message || "Logout successful");
-        router.push("/auth/login");
-      }, 4500);
-    } catch (error) {
-      console.error("Logout error:", error);
-      alert("Something went wrong during logout");
-    }
-  };
+  //     setTimeout(() => {
+  //       toast.success(data.message || "Logout successful");
+  //       router.push("/auth/login");
+  //     }, 4500);
+  //   } catch (error) {
+  //     console.error("Logout error:", error);
+  //     alert("Something went wrong during logout");
+  //   }
+  // };
 
   return (
-    <div className="p-4">
-      <Sidemenu />
+    <div className="">
+      
       {isLoading && (
         <div className="fixed inset-0 bg-black/20 bg-opacity-1  z-40" />
       )}
-      <h1>Welcome to the adminPage</h1>
-      <button
-        onClick={handleLogout}
+
+
+      {/* Sidemenu */}
+      <Sidemenu />
+
+
+
+      {/* <button
+        // onClick={handleLogout}
         disabled={isLoading}
         className={`
     mt-4 w-full font-bold py-3 rounded-md cursor-pointer
@@ -95,7 +101,7 @@ const AdminPage = () => {
         ) : (
           "Logout"
         )}
-      </button>
+      </button> */}
     </div>
   );
 };
