@@ -7,7 +7,7 @@ import { FaEye } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
 import IssueModal from "@/components/IssueModal";
 
-const Reports = () => {
+const Issues = () => {
   // Define the Issue interface for type safety
   interface Issue {
     _id: string;
@@ -53,6 +53,19 @@ const Reports = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
+  // Helper function to get the status text color
+  const getStatusBadge = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "resolved":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "in-progress":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
   // Helper function to get nested property value from an object
   const getNestedValue = (obj: any, path: string) => {
     return path.split(".").reduce((current, key) => current?.[key], obj);
@@ -123,314 +136,314 @@ const Reports = () => {
 
   // useEffect hook for fetching data from the server using EventSource
   useEffect(() => {
-    const mockIssues: Issue[] = [
-      {
-        _id: "65f3f01c8a1e67c8d9e2b10a",
-        implicatedPersonel: {
-          firstName: "John",
-          lastName: "Doe",
-          companyLocation: "Nairobi",
-          rolePosition: "Manager",
-          phoneNumber: "0712345678",
-        },
-        malpractice: {
-          type: "Fraud",
-          location: "Nairobi",
-          description: "Financial fraud case.",
-          isOngoing: "Yes",
-        },
-        reporter: "admin",
-        status: "pending",
-        source: "whistleblower",
-        filename: "report1.pdf",
-        createdAt: "2024-03-14T10:00:00Z",
-        updatedAt: "2024-03-14T10:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b10b",
-        implicatedPersonel: {
-          firstName: "Jane",
-          lastName: "Smith",
-          companyLocation: "Mombasa",
-          rolePosition: "Clerk",
-          phoneNumber: "0723456789",
-        },
-        malpractice: {
-          type: "Theft",
-          location: "Mombasa",
-          description: "Office supplies theft.",
-          isOngoing: "No",
-        },
-        reporter: "admin",
-        status: "resolved",
-        source: "whistleblower",
-        filename: "report2.pdf",
-        createdAt: "2024-03-13T12:00:00Z",
-        updatedAt: "2024-03-13T12:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b10c",
-        implicatedPersonel: {
-          firstName: "Peter",
-          lastName: "Jones",
-          companyLocation: "Kisumu",
-          rolePosition: "Supervisor",
-          phoneNumber: "0734567890",
-        },
-        malpractice: {
-          type: "Corruption",
-          location: "Kisumu",
-          description: "Bribery and corruption.",
-          isOngoing: "Yes",
-        },
-        reporter: "admin",
-        status: "pending",
-        source: "whistleblower",
-        filename: "report3.pdf",
-        createdAt: "2024-03-12T08:00:00Z",
-        updatedAt: "2024-03-12T08:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b10d",
-        implicatedPersonel: {
-          firstName: "Alice",
-          lastName: "Williams",
-          companyLocation: "Nairobi",
-          rolePosition: "Analyst",
-          phoneNumber: "0745678901",
-        },
-        malpractice: {
-          type: "Misconduct",
-          location: "Nairobi",
-          description: "Workplace harassment.",
-          isOngoing: "No",
-        },
-        reporter: "admin",
-        status: "closed",
-        source: "whistleblower",
-        filename: "report4.pdf",
-        createdAt: "2024-03-11T14:00:00Z",
-        updatedAt: "2024-03-11T14:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b10e",
-        implicatedPersonel: {
-          firstName: "Bob",
-          lastName: "Brown",
-          companyLocation: "Mombasa",
-          rolePosition: "Driver",
-          phoneNumber: "0756789012",
-        },
-        malpractice: {
-          type: "Theft",
-          location: "Mombasa",
-          description: "Vehicle fuel theft.",
-          isOngoing: "No",
-        },
-        reporter: "admin",
-        status: "resolved",
-        source: "whistleblower",
-        filename: "report5.pdf",
-        createdAt: "2024-03-10T09:00:00Z",
-        updatedAt: "2024-03-10T09:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b10f",
-        implicatedPersonel: {
-          firstName: "Charlie",
-          lastName: "Davis",
-          companyLocation: "Kisumu",
-          rolePosition: "Guard",
-          phoneNumber: "0767890123",
-        },
-        malpractice: {
-          type: "Misconduct",
-          location: "Kisumu",
-          description: "Negligence on duty.",
-          isOngoing: "Yes",
-        },
-        reporter: "admin",
-        status: "pending",
-        source: "whistleblower",
-        filename: "report6.pdf",
-        createdAt: "2024-03-09T16:00:00Z",
-        updatedAt: "2024-03-09T16:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b110",
-        implicatedPersonel: {
-          firstName: "Diana",
-          lastName: "Evans",
-          companyLocation: "Nairobi",
-          rolePosition: "IT Technician",
-          phoneNumber: "0778901234",
-        },
-        malpractice: {
-          type: "Data Breach",
-          location: "Nairobi",
-          description: "Unauthorized data access.",
-          isOngoing: "Yes",
-        },
-        reporter: "admin",
-        status: "pending",
-        source: "whistleblower",
-        filename: "report7.pdf",
-        createdAt: "2024-03-08T11:00:00Z",
-        updatedAt: "2024-03-08T11:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b111",
-        implicatedPersonel: {
-          firstName: "Frank",
-          lastName: "Garcia",
-          companyLocation: "Mombasa",
-          rolePosition: "Engineer",
-          phoneNumber: "0789012345",
-        },
-        malpractice: {
-          type: "Fraud",
-          location: "Mombasa",
-          description: "Falsified project reports.",
-          isOngoing: "No",
-        },
-        reporter: "admin",
-        status: "resolved",
-        source: "whistleblower",
-        filename: "report8.pdf",
-        createdAt: "2024-03-07T13:00:00Z",
-        updatedAt: "2024-03-07T13:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b112",
-        implicatedPersonel: {
-          firstName: "Grace",
-          lastName: "Harris",
-          companyLocation: "Kisumu",
-          rolePosition: "Sales Rep",
-          phoneNumber: "0790123456",
-        },
-        malpractice: {
-          type: "Theft",
-          location: "Kisumu",
-          description: "Misappropriation of company funds.",
-          isOngoing: "No",
-        },
-        reporter: "admin",
-        status: "closed",
-        source: "whistleblower",
-        filename: "report9.pdf",
-        createdAt: "2024-03-06T15:00:00Z",
-        updatedAt: "2024-03-06T15:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b113",
-        implicatedPersonel: {
-          firstName: "Henry",
-          lastName: "Ismail",
-          companyLocation: "Nairobi",
-          rolePosition: "Accountant",
-          phoneNumber: "0701234567",
-        },
-        malpractice: {
-          type: "Fraud",
-          location: "Nairobi",
-          description: "Invoice manipulation.",
-          isOngoing: "Yes",
-        },
-        reporter: "admin",
-        status: "pending",
-        source: "whistleblower",
-        filename: "report10.pdf",
-        createdAt: "2024-03-05T17:00:00Z",
-        updatedAt: "2024-03-05T17:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b114",
-        implicatedPersonel: {
-          firstName: "Irene",
-          lastName: "Jackson",
-          companyLocation: "Mombasa",
-          rolePosition: "HR Manager",
-          phoneNumber: "0712345678",
-        },
-        malpractice: {
-          type: "Misconduct",
-          location: "Mombasa",
-          description: "Violation of company policy.",
-          isOngoing: "No",
-        },
-        reporter: "admin",
-        status: "resolved",
-        source: "whistleblower",
-        filename: "report11.pdf",
-        createdAt: "2024-03-04T10:00:00Z",
-        updatedAt: "2024-03-04T10:00:00Z",
-        __v: 0,
-      },
-      {
-        _id: "65f3f01c8a1e67c8d9e2b115",
-        implicatedPersonel: {
-          firstName: "Jack",
-          lastName: "King",
-          companyLocation: "Kisumu",
-          rolePosition: "Engineer",
-          phoneNumber: "0723456789",
-        },
-        malpractice: {
-          type: "Theft",
-          location: "Kisumu",
-          description: "Equipment theft.",
-          isOngoing: "Yes",
-        },
-        reporter: "admin",
-        status: "pending",
-        source: "whistleblower",
-        filename: "report12.pdf",
-        createdAt: "2024-03-03T12:00:00Z",
-        updatedAt: "2024-03-03T12:00:00Z",
-        __v: 0,
-      },
-    ];
+    // const mockIssues: Issue[] = [
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b10a",
+    //     implicatedPersonel: {
+    //       firstName: "John",
+    //       lastName: "Doe",
+    //       companyLocation: "Nairobi",
+    //       rolePosition: "Manager",
+    //       phoneNumber: "0712345678",
+    //     },
+    //     malpractice: {
+    //       type: "Fraud",
+    //       location: "Nairobi",
+    //       description: "Financial fraud case.",
+    //       isOngoing: "Yes",
+    //     },
+    //     reporter: "admin",
+    //     status: "pending",
+    //     source: "whistleblower",
+    //     filename: "report1.pdf",
+    //     createdAt: "2024-03-14T10:00:00Z",
+    //     updatedAt: "2024-03-14T10:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b10b",
+    //     implicatedPersonel: {
+    //       firstName: "Jane",
+    //       lastName: "Smith",
+    //       companyLocation: "Mombasa",
+    //       rolePosition: "Clerk",
+    //       phoneNumber: "0723456789",
+    //     },
+    //     malpractice: {
+    //       type: "Theft",
+    //       location: "Mombasa",
+    //       description: "Office supplies theft.",
+    //       isOngoing: "No",
+    //     },
+    //     reporter: "admin",
+    //     status: "resolved",
+    //     source: "whistleblower",
+    //     filename: "report2.pdf",
+    //     createdAt: "2024-03-13T12:00:00Z",
+    //     updatedAt: "2024-03-13T12:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b10c",
+    //     implicatedPersonel: {
+    //       firstName: "Peter",
+    //       lastName: "Jones",
+    //       companyLocation: "Kisumu",
+    //       rolePosition: "Supervisor",
+    //       phoneNumber: "0734567890",
+    //     },
+    //     malpractice: {
+    //       type: "Corruption",
+    //       location: "Kisumu",
+    //       description: "Bribery and corruption.",
+    //       isOngoing: "Yes",
+    //     },
+    //     reporter: "admin",
+    //     status: "pending",
+    //     source: "whistleblower",
+    //     filename: "report3.pdf",
+    //     createdAt: "2024-03-12T08:00:00Z",
+    //     updatedAt: "2024-03-12T08:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b10d",
+    //     implicatedPersonel: {
+    //       firstName: "Alice",
+    //       lastName: "Williams",
+    //       companyLocation: "Nairobi",
+    //       rolePosition: "Analyst",
+    //       phoneNumber: "0745678901",
+    //     },
+    //     malpractice: {
+    //       type: "Misconduct",
+    //       location: "Nairobi",
+    //       description: "Workplace harassment.",
+    //       isOngoing: "No",
+    //     },
+    //     reporter: "admin",
+    //     status: "closed",
+    //     source: "whistleblower",
+    //     filename: "report4.pdf",
+    //     createdAt: "2024-03-11T14:00:00Z",
+    //     updatedAt: "2024-03-11T14:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b10e",
+    //     implicatedPersonel: {
+    //       firstName: "Bob",
+    //       lastName: "Brown",
+    //       companyLocation: "Mombasa",
+    //       rolePosition: "Driver",
+    //       phoneNumber: "0756789012",
+    //     },
+    //     malpractice: {
+    //       type: "Theft",
+    //       location: "Mombasa",
+    //       description: "Vehicle fuel theft.",
+    //       isOngoing: "No",
+    //     },
+    //     reporter: "admin",
+    //     status: "resolved",
+    //     source: "whistleblower",
+    //     filename: "report5.pdf",
+    //     createdAt: "2024-03-10T09:00:00Z",
+    //     updatedAt: "2024-03-10T09:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b10f",
+    //     implicatedPersonel: {
+    //       firstName: "Charlie",
+    //       lastName: "Davis",
+    //       companyLocation: "Kisumu",
+    //       rolePosition: "Guard",
+    //       phoneNumber: "0767890123",
+    //     },
+    //     malpractice: {
+    //       type: "Misconduct",
+    //       location: "Kisumu",
+    //       description: "Negligence on duty.",
+    //       isOngoing: "Yes",
+    //     },
+    //     reporter: "admin",
+    //     status: "pending",
+    //     source: "whistleblower",
+    //     filename: "report6.pdf",
+    //     createdAt: "2024-03-09T16:00:00Z",
+    //     updatedAt: "2024-03-09T16:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b110",
+    //     implicatedPersonel: {
+    //       firstName: "Diana",
+    //       lastName: "Evans",
+    //       companyLocation: "Nairobi",
+    //       rolePosition: "IT Technician",
+    //       phoneNumber: "0778901234",
+    //     },
+    //     malpractice: {
+    //       type: "Data Breach",
+    //       location: "Nairobi",
+    //       description: "Unauthorized data access.",
+    //       isOngoing: "Yes",
+    //     },
+    //     reporter: "admin",
+    //     status: "pending",
+    //     source: "whistleblower",
+    //     filename: "report7.pdf",
+    //     createdAt: "2024-03-08T11:00:00Z",
+    //     updatedAt: "2024-03-08T11:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b111",
+    //     implicatedPersonel: {
+    //       firstName: "Frank",
+    //       lastName: "Garcia",
+    //       companyLocation: "Mombasa",
+    //       rolePosition: "Engineer",
+    //       phoneNumber: "0789012345",
+    //     },
+    //     malpractice: {
+    //       type: "Fraud",
+    //       location: "Mombasa",
+    //       description: "Falsified project reports.",
+    //       isOngoing: "No",
+    //     },
+    //     reporter: "admin",
+    //     status: "resolved",
+    //     source: "whistleblower",
+    //     filename: "report8.pdf",
+    //     createdAt: "2024-03-07T13:00:00Z",
+    //     updatedAt: "2024-03-07T13:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b112",
+    //     implicatedPersonel: {
+    //       firstName: "Grace",
+    //       lastName: "Harris",
+    //       companyLocation: "Kisumu",
+    //       rolePosition: "Sales Rep",
+    //       phoneNumber: "0790123456",
+    //     },
+    //     malpractice: {
+    //       type: "Theft",
+    //       location: "Kisumu",
+    //       description: "Misappropriation of company funds.",
+    //       isOngoing: "No",
+    //     },
+    //     reporter: "admin",
+    //     status: "closed",
+    //     source: "whistleblower",
+    //     filename: "report9.pdf",
+    //     createdAt: "2024-03-06T15:00:00Z",
+    //     updatedAt: "2024-03-06T15:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b113",
+    //     implicatedPersonel: {
+    //       firstName: "Henry",
+    //       lastName: "Ismail",
+    //       companyLocation: "Nairobi",
+    //       rolePosition: "Accountant",
+    //       phoneNumber: "0701234567",
+    //     },
+    //     malpractice: {
+    //       type: "Fraud",
+    //       location: "Nairobi",
+    //       description: "Invoice manipulation.",
+    //       isOngoing: "Yes",
+    //     },
+    //     reporter: "admin",
+    //     status: "pending",
+    //     source: "whistleblower",
+    //     filename: "report10.pdf",
+    //     createdAt: "2024-03-05T17:00:00Z",
+    //     updatedAt: "2024-03-05T17:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b114",
+    //     implicatedPersonel: {
+    //       firstName: "Irene",
+    //       lastName: "Jackson",
+    //       companyLocation: "Mombasa",
+    //       rolePosition: "HR Manager",
+    //       phoneNumber: "0712345678",
+    //     },
+    //     malpractice: {
+    //       type: "Misconduct",
+    //       location: "Mombasa",
+    //       description: "Violation of company policy.",
+    //       isOngoing: "No",
+    //     },
+    //     reporter: "admin",
+    //     status: "resolved",
+    //     source: "whistleblower",
+    //     filename: "report11.pdf",
+    //     createdAt: "2024-03-04T10:00:00Z",
+    //     updatedAt: "2024-03-04T10:00:00Z",
+    //     __v: 0,
+    //   },
+    //   {
+    //     _id: "65f3f01c8a1e67c8d9e2b115",
+    //     implicatedPersonel: {
+    //       firstName: "Jack",
+    //       lastName: "King",
+    //       companyLocation: "Kisumu",
+    //       rolePosition: "Engineer",
+    //       phoneNumber: "0723456789",
+    //     },
+    //     malpractice: {
+    //       type: "Theft",
+    //       location: "Kisumu",
+    //       description: "Equipment theft.",
+    //       isOngoing: "Yes",
+    //     },
+    //     reporter: "admin",
+    //     status: "pending",
+    //     source: "whistleblower",
+    //     filename: "report12.pdf",
+    //     createdAt: "2024-03-03T12:00:00Z",
+    //     updatedAt: "2024-03-03T12:00:00Z",
+    //     __v: 0,
+    //   },
+    // ];
 
-    setIssues(mockIssues);
+    // setIssues(mockIssues);
     setLoading(false);
 
     // EventSource logic
-    // const eventSource = new EventSource("/api/admin/issues/stream");
-    // eventSource.onopen = () => {
-    //   setLoading(false);
-    // };
-    // eventSource.onmessage = (event) => {
-    //   try {
-    //     const newIssues = JSON.parse(event.data);
-    //     if (newIssues && Array.isArray(newIssues.issues)) {
-    //       setIssues(newIssues.issues);
-    //     } else {
-    //       setError("Failed to process data from server.");
-    //     }
-    //   } catch (e) {
-    //     setError("Failed to process data from server.");
-    //   }
-    // };
-    // eventSource.onerror = () => {
-    //   eventSource.close();
-    //   setError("Connection to server lost. Please refresh.");
-    //   setLoading(false);
-    // };
-    // return () => {
-    //   eventSource.close();
-    // };
-    // return () => {};
+    const eventSource = new EventSource("/api/admin/issues/stream");
+    eventSource.onopen = () => {
+      setLoading(false);
+    };
+    eventSource.onmessage = (event) => {
+      try {
+        const newIssues = JSON.parse(event.data);
+        if (newIssues && Array.isArray(newIssues.issues)) {
+          setIssues(newIssues.issues);
+        } else {
+          setError("Failed to process data from server.");
+        }
+      } catch (e) {
+        setError("Failed to process data from server.");
+      }
+    };
+    eventSource.onerror = () => {
+      eventSource.close();
+      setError("Connection to server lost. Please refresh.");
+      setLoading(false);
+    };
+    return () => {
+      eventSource.close();
+    };
+    return () => {};
   }, []);
 
   // Pagination calculations
@@ -684,8 +697,16 @@ const Reports = () => {
                 </td>
                 <td className="px-6 py-4">{issue.malpractice.type}</td>
                 <td className="px-6 py-4">{issue.malpractice.location}</td>
-                <td className="px-6 py-4 font-semibold text-yellow-500">
-                  {issue.status}
+                <td
+                  className={` font-semibold flex items-center justify-center text-center`}
+                >
+                  <div
+                    className={`${getStatusBadge(
+                      issue.status
+                    )} p-1 rounded-sm w-full`}
+                  >
+                    {issue.status}
+                  </div>
                 </td>
                 <td className="px-6 py-4">
                   {new Date(issue.createdAt).toLocaleDateString("en-US", {
@@ -853,4 +874,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default Issues;

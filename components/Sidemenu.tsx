@@ -81,9 +81,9 @@ export default function Sidemenu() {
   const menuItems: MenuItem[] = [
     { name: "Dashboard", icon: HomeIcon, path: "/admin" },
     {
-      name: "Reports",
+      name: "Issues",
       icon: ClipboardDocumentListIcon,
-      path: "/admin/reports",
+      path: "/admin/issues",
     },
     {
       name: "Case Management",

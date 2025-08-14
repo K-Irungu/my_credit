@@ -232,7 +232,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
               <div className="flex flex-wrap items-center gap-4">
                 {issue.filename && (
                   <a
-                    href={`#`}
+                    href={`/uploads/${issue.filename}`}
                     download={issue.filename}
                     className="flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] transform active:scale-95 transition-all duration-200"
                     aria-label="Download attachment"
