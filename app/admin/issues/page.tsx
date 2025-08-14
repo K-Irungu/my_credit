@@ -6,6 +6,9 @@ import { IoCloseOutline } from "react-icons/io5";
 import { FaEye } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
 import IssueModal from "@/components/IssueModal";
+import { fetchIssuesAndExportToExcel } from "../../../utils/fetchIssuesAndConvertToExcel";
+import { HiOutlineDownload } from "react-icons/hi";
+import toast from "react-hot-toast";
 
 const Issues = () => {
   // Define the Issue interface for type safety
@@ -44,6 +47,9 @@ const Issues = () => {
   const [sortColumn, setSortColumn] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [filterStatus, setFilterStatus] = useState("");
+
+const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // State variables for the modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -133,9 +139,6 @@ const Issues = () => {
     setFilteredAndSortedIssues(result);
     setCurrentPage(1); // Reset to first page when filters change
   }, [issues, searchTerm, filterStatus, sortColumn, sortDirection]);
-
-  // useEffect hook for fetching data from the server using EventSource
-  useEffect(() => {
     // const mockIssues: Issue[] = [
     //   {
     //     _id: "65f3f01c8a1e67c8d9e2b10a",
@@ -416,18 +419,41 @@ const Issues = () => {
     // ];
 
     // setIssues(mockIssues);
-    setLoading(false);
+    
+    
+// A new state to keep track of issue IDs
 
-    // EventSource logic
+  // A new state to control the initial load logic
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+
+  // Modified useEffect for SSE
+  useEffect(() => {
     const eventSource = new EventSource("/api/admin/issues/stream");
+
     eventSource.onopen = () => {
       setLoading(false);
+      console.log("SSE connection established.");
     };
+
     eventSource.onmessage = (event) => {
       try {
-        const newIssues = JSON.parse(event.data);
-        if (newIssues && Array.isArray(newIssues.issues)) {
-          setIssues(newIssues.issues);
+        const { issues: newIssuesList } = JSON.parse(event.data);
+        if (newIssuesList && Array.isArray(newIssuesList)) {
+          // If this is the initial load, populate the issueIds set
+          if (!initialLoadComplete) {
+            const ids = new Set(newIssuesList.map(issue => issue._id));
+            setIssueIds(ids);
+            setInitialLoadComplete(true); // Mark initial load as complete
+          } else {
+            // After initial load, check for newly added issues
+            const latestIssue = newIssuesList[newIssuesList.length - 1];
+            if (!issueIds.has(latestIssue._id)) {
+              toast.success(`A new issue has been reported!`);
+              // Add the new ID to the set to prevent repeat notifications
+              setIssueIds(prev => new Set(prev).add(latestIssue._id));
+            }
+          }
+          setIssues(newIssuesList);
         } else {
           setError("Failed to process data from server.");
         }
@@ -435,17 +461,18 @@ const Issues = () => {
         setError("Failed to process data from server.");
       }
     };
+
     eventSource.onerror = () => {
       eventSource.close();
       setError("Connection to server lost. Please refresh.");
       setLoading(false);
     };
+
+    // Clean up the event source
     return () => {
       eventSource.close();
     };
-    return () => {};
-  }, []);
-
+  }, [initialLoadComplete, issueIds]); // Add initialLoadComplete to the dependency array
   // Pagination calculations
   const totalPages = Math.ceil(filteredAndSortedIssues.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -522,6 +549,13 @@ const Issues = () => {
     return <div className="text-center p-8 text-red-500">Error: {error}</div>;
   }
 
+  async function handleDownloadAll() {
+    // Define the desired output filename
+    const OUTPUT_FILE = "all_issues.xlsx";
+
+    // Call the helper function
+    await fetchIssuesAndExportToExcel(OUTPUT_FILE);
+  }
   return (
     // Main container with fixed height using flexbox
     <div className="flex flex-col h-[calc(100vh-100px)] shadow-sm rounded-lg">
@@ -550,6 +584,7 @@ const Issues = () => {
             ></path>
           </svg>
         </div>
+
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
           <div className="relative flex items-center gap-2">
             <div className="relative">
@@ -623,6 +658,19 @@ const Issues = () => {
             <IoCloseOutline className="w-4 h-4" />
             Clear Filters
           </button>
+          <button
+            onClick={handleDownloadAll}
+            disabled={isDownloading}
+            className={`cursor-pointer px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium flex items-center gap-2
+    ${
+      isDownloading
+        ? "bg-gray-50 border-[#E0E0E0] text-gray-400 cursor-not-allowed"
+        : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
+    }`}
+          >
+            <HiOutlineDownload className="w-4 h-4" />
+            {isDownloading ? "Downloading..." : "Download All Issues"}
+          </button>
         </div>
       </div>
 
@@ -689,7 +737,7 @@ const Issues = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 font-medium text-[#333333]">
-                  #{issue._id.slice(0, 8)}
+                  #{issue._id.slice(0, 8)}...
                 </td>
                 <td className="px-6 py-4">
                   {issue.implicatedPersonel.firstName}{" "}

@@ -4,6 +4,7 @@ import { getAllIssues } from "../../../../../controllers/admin/issues/getAllIssu
 export async function GET(req: NextRequest) {
   try {
     const issues = await getAllIssues();
+
     return NextResponse.json(issues);
   } catch (err: any) {
     console.error("Error in /api/admin/issues/list (GET):", err);

@@ -449,7 +449,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
             <h3 className="text-xl font-medium flex items-center">
               Issue:{" "}
               <span className="ml-2 font-mono text-base md:text-lg">
-                {issue._id.slice(0, 8)}
+                {issue._id.slice(0, 8)}...
               </span>
               <button
                 onClick={copyToClipboard}
