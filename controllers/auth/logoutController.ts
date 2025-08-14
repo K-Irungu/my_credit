@@ -1,131 +1,100 @@
-import { connectToDB } from "@/lib/db";
-import { verifyAuthToken } from "../../utils/auth";
-import Admin from "@/models/admin";
+// controllers/auth/logoutController.ts
+import { cookies } from "next/headers";
+import { revokeSessionById } from "@/utils/session";
+import { clearSessionCookie } from "@/utils/cookies";
 import logger from "@/lib/logger";
 import { recordAuditTrail } from "@/utils/recordAuditTrail";
+import { connectToDB } from "@/lib/db";
+import Session from "@/models/session";
 
 interface Context {
   browser: string;
   ipAddress: string;
   endpoint: string;
 }
-export async function logout(token: string, context: Context) {
+
+export async function logout(deviceId: string, context: Context) {
   const { browser, ipAddress, endpoint } = context;
 
   try {
-    // 1) Check if the token is valid
-    const verified = await verifyAuthToken(token);
-
-    // 2) If the token verification failed, propagate the failure response immediately
-    if (verified.status !== 200) {
-      logger.warn(`Logout failed: ${verified.message}`);
-
-      await recordAuditTrail({
-        browser,
-        ipAddress,
-        deviceId: "",
-        activity: `Logout attempt failed - ${verified.message}`,
-        endpoint,
-        userDetails: {
-          userId: "null",
-          model: "Admin",
-          name: "",
-          role: "",
-        },
-        dataInTransit: { tokenAttempted: token },
-      });
-
-      return {
-        status: verified.status,
-        message: verified.message,
-        data: null,
-      };
-    }
-
-    const decoded = verified.data;
-
-    // --- Ensure DB connection is ready ---
     await connectToDB();
 
-    // --- Find admin user by decoded token ID ---
-    const admin = await Admin.findById(decoded?.id);
-    if (!admin) {
-      logger.warn(`Logout failed: admin not found.`);
+    // --- Get session ID from cookies ---
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("session")?.value;
 
+    if (!sessionId) {
+      logger.warn("Logout failed: No session found in cookies");
       await recordAuditTrail({
         browser,
         ipAddress,
-        deviceId: "",
-        activity: "Logout attempt failed - user not found",
+        deviceId,
+        activity: "Logout failed - no session in cookies",
         endpoint,
         userDetails: {
-          userId: "decoded?.id",
+          userId: null,
+          model: "Unknown",
+          name: null,
+          role: null,
+        },
+        dataInTransit: { revokedSessionId: null },
+      });
+      return { status: 401, message: "No active session", data: null };
+    }
+
+    // --- Look up session in DB ---
+    const session = await Session.findOne({ sessionHash: sessionId })
+      .populate("userId", "fullName role _id");
+
+    if (!session) {
+      logger.warn("Logout failed: Session cookie present but no DB record");
+      await recordAuditTrail({
+        browser,
+        ipAddress,
+        deviceId,
+        activity: "Logout failed - session cookie present but no matching DB record",
+        endpoint,
+        userDetails: {
+          userId: "unknown",
           model: "Admin",
           name: "",
           role: "",
         },
-        dataInTransit: {
-          noData: "",
-        },
+        dataInTransit: { sessionIdInCookies: sessionId },
       });
-
-      return {
-        status: 401,
-        message: "Invalid token - user not found",
-        data: null,
-      };
+      return { status: 401, message: "Invalid session", data: null };
     }
-    // Capture state before logout for audit trail
-    const beforeData = {
-      sessionToken: admin.sessionToken,
-      deviceId: admin.deviceId,
+
+    const admin = session.userId as {
+      _id: string;
+      fullName: string;
+      role: string;
     };
 
-    // Clear the session token and deviceId to effectively log out the user
-    logger.info(
-      `Logging out admin: ${admin.fullName} from device: ${admin.deviceId}`
-    );
-    admin.sessionToken = null;
-    admin.deviceId = null;
-    await admin.save();
+    // --- Revoke session & clear cookie ---
+    await revokeSessionById(sessionId);
+    clearSessionCookie();
 
-    const afterData = {
-      sessionToken: admin.sessionToken,
-      deviceId: admin.deviceId,
-    };
-
-    // Record a successful logout audit trail
+    // --- Audit: Successful logout ---
+    logger.info(`Admin ${admin.fullName} successfully logged out`);
     await recordAuditTrail({
       browser,
       ipAddress,
-      deviceId: beforeData.deviceId || "",
+      deviceId: session.deviceId || "",
       activity: "Logout successful",
       endpoint,
       userDetails: {
         userId: admin._id,
         model: "Admin",
         name: admin.fullName,
-        role: admin.role || "",
+        role: admin.role,
       },
-      dataInTransit: {
-        before: beforeData,
-        after: afterData,
-      },
+      dataInTransit: { revokedSessionId: sessionId },
     });
 
-    // --- Return success response ---
-    logger.info(
-      `Admin: ${admin.fullName} successfully logged out. from device.`
-    );
-    return {
-      status: 200,
-      message: "Logout successful",
-      data: null,
-    };
+    return { status: 200, message: "Logged out successfully", data: null };
   } catch (error) {
-    // --- Log any verification or DB errors ---
     logger.error("Logout error", error);
-
     await recordAuditTrail({
       browser,
       ipAddress,
@@ -133,18 +102,13 @@ export async function logout(token: string, context: Context) {
       activity: "Logout failed - internal server error",
       endpoint,
       userDetails: {
-        userId: "null",
+        userId: "unknown",
         model: "Admin",
         name: "",
         role: "",
       },
       dataInTransit: { error: "error" },
     });
-    // --- Return generic internal server error to avoid info leaks ---
-    return {
-      status: 500,
-      message: "Internal server error",
-      data: null,
-    };
+    return { status: 500, message: "Internal server error", data: null };
   }
 }
