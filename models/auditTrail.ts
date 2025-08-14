@@ -3,14 +3,14 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface AuditTrailDocument extends Document {
   browser: string;
   ipAddress: string;
-  deviceId: string;
+  deviceId: string | null;
   activity: string;
   endpoint: string;
   userDetails: {
-    userId: mongoose.Types.ObjectId;
-    model: "Admin" | "Reporter";
-    name?: string;
-    role?: string;
+    userId?: mongoose.Types.ObjectId | null; // optional for failed logins
+    model: "Admin" | "Reporter" | "Unknown"; // added Unknown for failed cases
+    name?: string | null;
+    role?: string | null;
   };
   dataInTransit?: any;
 
@@ -21,19 +21,19 @@ const auditTrailSchema = new Schema<AuditTrailDocument>(
   {
     browser: { type: String, required: true },
     ipAddress: { type: String, required: true },
-    deviceId: { type: String, required: true },
+    deviceId: { type: String , required: false },
     activity: { type: String, required: true, trim: true },
     endpoint: { type: String, required: true, trim: true },
     userDetails: {
       userId: {
         type: Schema.Types.ObjectId,
-        required: true,
-        refPath: "userDetails.model", 
+        refPath: "userDetails.model", //mongoose will look at userDetails.model to know which model to reference for the userId
+        required: false,
       },
       model: {
         type: String,
         required: true,
-        enum: ["Admin", "Reporter"], 
+        enum: ["Admin", "Reporter", "Unknown"], 
       },
       timestamp: { type: Date, default: Date.now },
       name: { type: String, required: false },

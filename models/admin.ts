@@ -54,7 +54,7 @@ const AdminSchema: Schema<IAdmin> = new Schema(
     deviceId: {
       type: String,
       unique: true
-      // Removed `unique: true`
+
     },
     resetPasswordToken: {
       type: String,

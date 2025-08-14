@@ -1,19 +1,19 @@
 // utils/recordAuditTrail.ts
 import mongoose from "mongoose";
 import AuditTrail from "@/models/auditTrail";
-import logger from "@/lib/logger"; // make sure you import your logger at the top
+import logger from "@/lib/logger"; 
 
 interface UserDetails {
-  userId: mongoose.Types.ObjectId | string;
-  model: "Admin" | "Reporter";
-  name?: string;
-  role?: string;
+  userId: mongoose.Types.ObjectId | string | null;
+  model: "Admin" | "Reporter" | "Unknown";
+  name?: string | null;
+  role?: string | null;
 }
 
 interface RecordAuditProps {
   browser: string;
   ipAddress: string;
-  deviceId: string;
+  deviceId: string | null;
   activity: string;
   endpoint: string;
   userDetails: UserDetails;

@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 const Login = () => {
+  // State
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -12,17 +13,17 @@ const Login = () => {
 
   const router = useRouter();
 
-  // Generate or load deviceId once on component mount
+  // 1) Generate or load deviceId on mount
   useEffect(() => {
     let storedDeviceId = localStorage.getItem("deviceId");
     if (!storedDeviceId) {
-      storedDeviceId = crypto.randomUUID(); // generate UUID (modern browsers)
+      storedDeviceId = crypto.randomUUID();
       localStorage.setItem("deviceId", storedDeviceId);
     }
     setDeviceId(storedDeviceId);
   }, []);
 
-  // Clear inputs when loading finishes (isLoading changes from true to false)
+  // 2) Clear inputs when loading finishes
   useEffect(() => {
     if (!isLoading) {
       setEmail("");
@@ -30,10 +31,10 @@ const Login = () => {
     }
   }, [isLoading]);
 
+  // 3) Handle form submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // --- Validate input ---
     if (!email || !password) {
       toast.error("Ensure all fields are filled!");
       return;
@@ -43,48 +44,41 @@ const Login = () => {
 
     try {
       const browser = navigator.userAgent;
+      const loginEndpoint = "/api/auth/login";
 
-      // --- Make login request ---
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(loginEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, deviceId, browser }),
+        body: JSON.stringify({ email, password, deviceId, browser }),
       });
 
       const data = await response.json();
 
-      // --- Handle unsuccessful login ---
       if (data.status !== 200) {
-        setTimeout(() => {
-          toast.error(data.message || "Login failed");
-        }, 500);
-
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 4500);
+        setTimeout(() => toast.error(data.message || "Login failed"), 500);
+        setTimeout(() => setIsLoading(false), 4500);
         return;
       }
 
-      // --- Handle successful login ---
       setTimeout(() => {
-        toast.success(data.message || "Login failed");
+        toast.success(data.message || "Login successful");
         router.push("/admin");
       }, 4500);
     } catch (error) {
-      // --- Handle network or unexpected errors ---
       toast.error("Something went wrong. Please try again.");
       console.error("Login error:", error);
       setIsLoading(false);
     }
   };
 
+  // 4) Render UI
   return (
     <main className="flex items-center justify-center py-10 px-2 h-[60vh]">
       {isLoading && (
-        <div className="fixed inset-0 bg-black/20 bg-opacity-1  z-40" />
+        <div className="fixed inset-0 bg-black/20 bg-opacity-1 z-40" />
       )}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6">
-        {/* Logo or title */}
+        {/* Header */}
         <div className="text-center mb-4">
           <img
             src="/images/MyCredit-Logo.webp"
@@ -96,9 +90,8 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Login form */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
           <input
             type="email"
             id="email"
@@ -109,8 +102,6 @@ const Login = () => {
             placeholder="Email Address"
             required
           />
-
-          {/* Password */}
           <input
             type="password"
             id="password"
@@ -121,21 +112,14 @@ const Login = () => {
             placeholder="Password"
             required
           />
-
-          {/* Login Button */}
-
           <button
             type="submit"
             disabled={isLoading}
-            className={`
-          w-full font-bold py-3 rounded-md cursor-pointer
-          transition duration-300 ease-in-out transform-gpu
-          ${
-            isLoading
-              ? "bg-[#3C3C3C] text-[#FAD41A] cursor-not-allowed"
-              : "bg-[#FAD41A] text-[#3C3C3C] hover:text-[#FAD41A] hover:bg-[#3C3C3C] active:scale-95"
-          }
-        `}
+            className={`cursor-pointer w-full font-bold py-3 rounded-md transition duration-300 ease-in-out transform-gpu ${
+              isLoading
+                ? "bg-[#3C3C3C] text-[#FAD41A] cursor-not-allowed"
+                : "bg-[#FAD41A] text-[#3C3C3C] hover:text-[#FAD41A] hover:bg-[#3C3C3C] active:scale-95"
+            }`}
           >
             {isLoading ? (
               <>
@@ -164,9 +148,12 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Footer links */}
+        {/* Footer */}
         <div className="mt-6 text-right text-sm text-[#58595d]">
-          <a href="/auth/forgot-password" className="text-[#58595d] hover:underline">
+          <a
+            href="/auth/forgot-password"
+            className="text-[#58595d] hover:underline"
+          >
             Forgot your password?
           </a>
         </div>

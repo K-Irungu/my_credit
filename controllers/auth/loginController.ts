@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { connectToDB } from "@/lib/db";
 import Admin from "@/models/admin";
 import logger from "@/lib/logger";
-import { recordAuditTrail } from "@/utils/recordAuditTrail"; // import your utility
+import { connectToDB } from "@/lib/db";
+import { recordAuditTrail } from "@/utils/recordAuditTrail";
+import { createSession, findActiveSessionForUser } from "@/utils/session";
+import { setSessionCookie } from "@/utils/cookies";
 
 interface Context {
   browser: string;
@@ -18,73 +19,55 @@ export async function login(
   context: Context
 ) {
   const { browser, ipAddress, endpoint } = context;
-  // console.log(email);
-  const JWT_SECRET = process.env.JWT_SECRET;
 
-  if (!JWT_SECRET) {
-    throw new Error("JWT_SECRET is not defined in environment variables");
-  }
   try {
     await connectToDB();
 
     // 1) Find admin by email
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      logger.warn(`Login failed: admin not found (${email})`);
-
+      logger.warn(`Failed login attempt: Admin with email: (${email}) not found.`);
       await recordAuditTrail({
         browser,
         ipAddress,
-        deviceId,
-        activity: "Login attempt failed - admin not found",
+        deviceId: null,
+        activity: `Failed login attempt: Admin with email: (${email}) not found.`,
         endpoint,
         userDetails: {
-          userId: "null",
-          model: "Admin",
-          name: "",
-          role: "",
+          userId: null,
+          model: "Unknown",
+          name: null,
+          role: null,
         },
-        dataInTransit: { emailAttempted: email },
+        dataInTransit: { emailEntered: email },
       });
-
-      return {
-        status: 401,
-        message: "Login failed: Invalid credentials",
-        data: null,
-      };
+      return { status: 401, message: "Login failed: Invalid credentials", data: null };
     }
 
     // 2) Compare passwords
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      logger.warn(`Login failed: wrong password (${email})`);
-
+      logger.warn(`Login failed: wrong password for: (${email})`);
       await recordAuditTrail({
         browser,
         ipAddress,
-        deviceId,
-        activity: "Login attempt failed - wrong password",
+        deviceId: null,
+        activity: `Login failed: wrong password for: (${email})`,
         endpoint,
         userDetails: {
           userId: admin._id,
           model: "Admin",
           name: admin.fullName,
-          role: admin.role || "",
+          role: admin.role,
         },
-        dataInTransit: { attemptedEmail: email },
+        dataInTransit: { enteredEmail: email },
       });
-
-      return {
-        status: 401,
-        message: "Login failed: Invalid credentials",
-        data: null,
-      };
+      return { status: 401, message: "Login failed: Invalid credentials", data: null };
     }
 
-    // 3) Check if logged in on a different device
-    if (admin.sessionToken && admin.deviceId && admin.deviceId !== deviceId) {
-      logger.warn(`Login attempt on different device for admin: ${email}`);
-
+    // 3) Check for active session
+    const existing = await findActiveSessionForUser(admin._id.toString());
+    if (existing) {
       await recordAuditTrail({
         browser,
         ipAddress,
@@ -95,45 +78,27 @@ export async function login(
           userId: admin._id,
           model: "Admin",
           name: admin.fullName,
-          role: admin.role || "",
+          role: admin.role,
         },
         dataInTransit: {
           attemptedDeviceId: deviceId,
-          currentDeviceId: admin.deviceId,
+          currentDeviceId: existing.deviceId,
         },
       });
-
-      return {
-        status: 403,
-        message: "You are already logged in on another device.",
-        data: null,
-      };
+      return { status: 403, message: "You are already logged in on another device.", data: null };
     }
 
-    // 4) Create JWT token
-    const token = jwt.sign(
-      { id: admin._id, email: admin.email, role: "admin" },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    // 4) Create new session
+    const { sessionId, expiresAt } = await createSession({
+      userId: admin._id.toString(),
+      deviceId: deviceId ?? null,
+      userAgent: browser,
+      ipAddress,
+    });
+    setSessionCookie(sessionId, expiresAt);
 
-    // 5) Previous session token and deviceId
-    const beforeData = {
-      sessionToken: admin.sessionToken,
-      deviceId: admin.deviceId,
-      lastLogin: admin.lastLogin,
-    };
-
-    // 6) Update session token and deviceId
     admin.lastLogin = new Date();
-    admin.sessionToken = token;
-    admin.deviceId = deviceId;
-
     await admin.save();
-
-    logger.info(
-      `Login successful for admin: ${admin.fullName} on device: ${deviceId}`
-    );
 
     await recordAuditTrail({
       browser,
@@ -145,22 +110,15 @@ export async function login(
         userId: admin._id,
         model: "Admin",
         name: admin.fullName,
-        role: admin.role || "",
+        role: admin.role,
       },
-      dataInTransit: {
-        before: beforeData,
-        after: {
-          sessionToken: admin.sessionToken,
-          deviceId: admin.deviceId,
-          lastLogin: admin.lastLogin,
-        },
-      },
+      dataInTransit: { sessionExpiresAt: expiresAt },
     });
 
     return {
       status: 200,
       message: "Login successful.",
-      data: { fullName: admin.fullName, token },
+      data: { fullName: admin.fullName },
     };
   } catch (error) {
     logger.error("Login error", error);
