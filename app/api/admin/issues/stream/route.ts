@@ -18,6 +18,8 @@ export async function GET() {
           // Format the data as a Server-Sent Event
           const data = `data: ${JSON.stringify({ issues })}\n\n`;
           controller.enqueue(data);
+
+
         } catch (error) {
           console.error("Error fetching data for stream:", error);
           // If there's an error, clear the interval and close the stream
