@@ -1,25 +1,15 @@
-// app/api/admin/issues/list/route.ts
-import { NextResponse } from "next/server";
-import { requireAdmin } from "@/utils/requireAdmin";
+import { NextRequest, NextResponse } from "next/server";
+import { getAllIssues } from "../../../../../controllers/admin/issues/getAllIssuesController"
 
-export async function GET(req: Request) {
-  // Check admin authentication
-  const auth = await requireAdmin();
-  if (!auth) {
+export async function GET(req: NextRequest) {
+  try {
+    const issues = await getAllIssues();
+    return NextResponse.json(issues);
+  } catch (err: any) {
+    console.error("Error in /api/admin/issues/list (GET):", err);
     return NextResponse.json(
-      { ok: false, message: "Unauthorized" },
-      { status: 401 }
+      { error: err.message || "Could not fetch issues" },
+      { status: 500 }
     );
   }
-
-  // Fetch the list of issues from DB (placeholder for now)
-  const issues = [
-    { id: 1, title: "Login button is not working", status: "Open" },
-    { id: 2, title: "Incorrect data on dashboard", status: "In Progress" },
-  ];
-
-  return NextResponse.json({
-    ok: true,
-    issues,
-  });
 }

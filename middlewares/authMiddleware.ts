@@ -1,52 +1,46 @@
-import jwt from "jsonwebtoken";
-import { NextFunction, Request, Response } from "express";
-import Admin from "@/models/admin";
-import { connectToDB } from "@/lib/db";
+// import { NextRequest, NextResponse } from "next/server";
+// import {connectToDB} from "@/lib/db"; // your DB connection utility
+// import Session from "@/models/session";  // your Mongoose session model
 
-interface AdminTokenPayload {
-  id: string;
-  email: string;
-  role: string;
-}
+// export async function authMiddleware(req: NextRequest) {
+//   // Get session ID from cookies
+//   const sessionId = req.cookies.get("session")?.value;
 
-export async function authMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const authHeader = req.headers.authorization;
+//   if (!sessionId) {
+//     return NextResponse.redirect(new URL("/", req.url));
+//   }
 
-    if (!authHeader?.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Authorization token missing" });
-    }
+//   try {
+//     await connectToDB();
 
-    const token = authHeader.split(" ")[1];
+//     // Check if session exists in DB
+//     const session = await Session.findById(sessionId).populate("userId");
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error("JWT_SECRET not configured");
-    }
+//     if (!session) {
+//       // Session deleted or invalid → clear cookie
+//       const res = NextResponse.redirect(new URL("/login", req.url));
+//       res.cookies.set("sessionId", "", { path: "/", expires: new Date(0) });
+//       return res;
+//     }
 
-    const decoded = jwt.verify(token, secret) as AdminTokenPayload;
+//     // Optional: check expiration
+//     if (session.expiresAt && session.expiresAt < new Date()) {
+//       await Session.findByIdAndDelete(sessionId);
+//       const res = NextResponse.redirect(new URL("/login", req.url));
+//       res.cookies.set("sessionId", "", { path: "/", expires: new Date(0) });
+//       return res;
+//     }
 
-    await connectToDB();
+//     // Attach user info via request headers (for serverless compatibility)
+//     req.headers.set("x-user-id", session.userId.toString());
+//     req.headers.set("x-user-role", session.userId.role);
 
-    const admin = await Admin.findById(decoded.id);
-    if (!admin) {
-      return res.status(401).json({ message: "Admin not found" });
-    }
-
-    if (!decoded || admin.sessionToken !== token) {
-      return res.status(401).json({ message: "Invalid session token" });
-    }
-
-    (req as any).admin = admin;
-    console.log("Admin set on req:", (req as any).admin);
-
-    next();
-  } catch (error) {
-    console.error("Auth middleware error:", error);
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-}
+//     // Continue
+//     return NextResponse.next();
+//   } catch (err) {
+//     console.error("Auth middleware error:", err);
+//     const res = NextResponse.redirect(new URL("/login", req.url));
+//     res.cookies.set("sessionId", "", { path: "/", expires: new Date(0) });
+//     return res;
+//   }
+// }

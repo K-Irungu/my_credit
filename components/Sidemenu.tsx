@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { toast } from "react-hot-toast";
 import {
   HomeIcon,
@@ -29,6 +29,7 @@ export default function Sidemenu() {
   const [deviceId, setDeviceId] = useState("");
 
   const router = useRouter();
+  const pathname = usePathname(); // Get the current URL path
 
   //  Generate or load deviceId on mount
   useEffect(() => {
@@ -39,7 +40,6 @@ export default function Sidemenu() {
     }
     setDeviceId(storedDeviceId);
   }, []);
-
 
   // --- Logout Handler ---
   const handleLogout = async () => {
@@ -85,37 +85,52 @@ export default function Sidemenu() {
       icon: ClipboardDocumentListIcon,
       path: "/admin/reports",
     },
-    { name: "Case Management", icon: BriefcaseIcon, path: "/admin/cases" },
+    {
+      name: "Case Management",
+      icon: BriefcaseIcon,
+      path: "/admin/case-management",
+    },
     { name: "Analytics", icon: ChartBarIcon, path: "/admin/analytics" },
     { name: "Settings", icon: Cog6ToothIcon, path: "/admin/settings" },
   ];
 
-  // --- Menu Button Component ---
-  const MenuButton = ({ item }: { item: MenuItem }) => (
-    <button
-      onClick={() => {
-        if (item.action) {
-          item.action();
-        } else if (item.path) {
-          router.push(item.path);
-        }
-      }}
-      className={`cursor-pointer flex items-center gap-3 w-full text-left transition-all duration-200 rounded-lg
-        ${open ? "px-4 py-3" : "px-0 py-3 justify-center"}
-        ${
-          item.danger
-            ? "hover:bg-red-600 text-red-600"
-            : item.special
-            ? "bg-black text-white hover:bg-[#ffde17] hover:text-black"
-            : "hover:bg-[#ffde17] hover:text-black text-black"
-        }
-        font-medium`}
-      aria-label={item.name}
-    >
-      <item.icon className="h-5 w-5 shrink-0" />
-      {open && <span className="truncate">{item.name}</span>}
-    </button>
-  );
+ // --- Menu Button Component ---
+  const MenuButton = ({ item }: { item: MenuItem }) => {
+    const isActive = item.path && pathname.includes(item.path);
+
+    // Special case for dashboard to avoid partial path matching issues
+    const isDashboardActive = item.path === '/admin' && pathname === '/admin';
+    const finalIsActive = item.path === '/admin' ? isDashboardActive : isActive;
+
+    return (
+      <button
+        onClick={() => {
+          if (item.action) {
+            item.action();
+          } else if (item.path) {
+            router.push(item.path);
+          }
+        }}
+        className={`cursor-pointer flex items-center gap-3 w-full text-left transition-all duration-200 rounded-lg
+          ${open ? "px-4 py-3" : "p-3"}
+          ${
+            item.danger
+              ? "hover:bg-red-600 text-red-600"
+              : item.special
+              ? "bg-black text-white hover:bg-[#ffde17] hover:text-black"
+              : finalIsActive
+              ? "bg-[#ffde17] text-black "
+              : "hover:bg-[#ffde17] hover:text-black text-black"
+          }
+          font-medium`}
+        aria-label={item.name}
+      >
+        <item.icon className="h-5 w-5 shrink-0" />
+        {open && <span className="truncate">{item.name}</span>}
+      </button>
+    );
+  };
+
 
   // --- Render ---
   return (

@@ -5,12 +5,10 @@ import Sidemenu from "@/components/Sidemenu";
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className=" bg-white flex">
+      {/* Render the actual page content (login, register, forgot password, etc.) */}
+      <Sidemenu />
 
-        {/* Render the actual page content (login, register, forgot password, etc.) */}
-              <Sidemenu />
-
-        <div>{children}</div>
-
+      <div className="p-5 mx-auto w-full h-[calc(100vh-64px)">{children}</div>
     </div>
   );
 }

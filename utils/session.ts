@@ -3,7 +3,7 @@ import Session from "@/models/session";
 
 // --- Session configuration constants ---
 export const SESSION_COOKIE = "session"; 
-export const SESSION_LIFETIME_MS = 60 * 60 * 100;  //Sessions last 1h
+export const SESSION_LIFETIME_MS = 60 * 60 * 1000;  //Sessions last 1h
 // export const SESSION_LIFETIME_MS = 60 * 60 * 1000; 
 
 // --- Helper: Generate a secure random session ID ---
