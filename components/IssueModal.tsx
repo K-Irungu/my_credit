@@ -117,7 +117,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
   return (
     // The main modal container with transition for the backdrop
     <div
-      className={`fixed inset-0 z-50 overflow-y-auto bg-gray-900 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 overflow-y-auto bg-black/70 transition-opacity duration-300 ${
         isAnimating ? 'bg-opacity-50' : 'bg-opacity-0'
       }`}
     >
@@ -129,7 +129,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           }`}
         >
           {/* Modal Header */}
-          <div className="flex items-center justify-between p-4 border-b rounded-t border-[#E0E0E0] bg-[#ffde17] text-black sticky top-0 z-10">
+          <div className="flex items-center justify-between p-4 border-b rounded-t border-[#E0E0E0] bg-[#ffde17] text-black sticky top-0 z-10 ">
             <h3 className="text-xl font-medium flex items-center">
               Issue:{' '}
               <span className="ml-2 font-mono text-base md:text-lg">
@@ -137,18 +137,21 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
               </span>
               <button
                 onClick={copyToClipboard}
-                className="ml-2 p-1 text-black hover:bg-black hover:text-[#ffde17] rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#ffde17]"
+                className="cursor-pointer flex items-center gap-1 ml-2 w-24 px-2 py-1 justify-center text-black bg-white/20 hover:bg-white/40 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#ffde17]"
                 aria-label="Copy issue ID"
               >
                 {isCopied ? <Check className="w-4 h-4" /> : <Clipboard className="w-4 h-4" />}
+                <span className="text-sm font-semibold ">
+                  {isCopied ? 'Copied!' : 'Copy ID'}
+                </span>
               </button>
-              <span className="ml-4 text-xl font-bold">
+              <span className="ml-4 text-xl font-bold hidden md:block">
                 - {issue.malpractice.type}
               </span>
             </h3>
             <button
               type="button"
-              className="text-black bg-transparent hover:bg-black hover:text-[#ffde17] rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center transition-colors duration-200"
+              className="cursor-pointer text-black bg-transparent hover:bg-gray-900 hover:text-[#ffde17] rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center transition-colors duration-200"
               onClick={onClose}
               aria-label="Close modal"
             >
@@ -162,7 +165,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
               <p className="leading-relaxed text-[#333333]">
                 <span className="font-bold text-black">Status:</span>{' '}
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-semibold ${getStatusBadge(issue.status)}`}
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium ${getStatusBadge(issue.status)}`}
                 >
                   {issue.status}
                 </span>
@@ -176,7 +179,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
                 {issue.malpractice.isOngoing}
               </p>
               <p className="leading-relaxed text-[#333333]">
-                <span className="font-bold text-black">Location:</span>{' '}
+                <span className="font-bold text-black">Location of Malpractice:</span>{' '}
                 {issue.malpractice.location}
               </p>
               <p className="leading-relaxed text-[#333333]">
@@ -191,7 +194,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
             
             <div className="border-t border-[#E0E0E0] pt-4">
               <h4 className="text-md font-bold text-black mb-2 flex items-center">
-                <FileText className="w-4 h-4 mr-2" />
+                {/* <FileText className="w-4 h-4 mr-2" /> */}
                 Description
               </h4>
               <p className="leading-relaxed text-[#333333]">{issue.malpractice.description}</p>
@@ -199,7 +202,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
 
             <div className="border-t border-[#E0E0E0] pt-4">
               <h4 className="text-md font-bold text-black mb-2 flex items-center">
-                <User className="w-4 h-4 mr-2" />
+                {/* <User className="w-4 h-4 mr-2" /> */}
                 Implicated Personnel
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -213,7 +216,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
                   {issue.implicatedPersonel.rolePosition}
                 </p>
                 <p className="leading-relaxed text-[#333333]">
-                  <span className="font-bold text-black">Location:</span>{' '}
+                  <span className="font-bold text-black">Work Location:</span>{' '}
                   {issue.implicatedPersonel.companyLocation}
                 </p>
                 <p className="leading-relaxed text-[#333333]">
@@ -246,14 +249,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
                   <Printer className="w-4 h-4 mr-2" />
                   Print Report
                 </button>
-                <button
-                  onClick={handleManage}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] transform active:scale-95 transition-all duration-200"
-                  aria-label="Open manage view"
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  Open Manage
-                </button>
+              
               </div>
             </div>
 
@@ -272,20 +268,17 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center p-4 border-t border-[#E0E0E0] rounded-b sticky bottom-0 z-10 bg-white">
+         <div className="flex items-center gap-3 p-4 border-t border-[#E0E0E0] rounded-b sticky bottom-0 z-10 bg-white">
             <button
-              type="button"
-              className="text-[#ffde17] bg-gray-900 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-[#ffde17] font-medium rounded-lg text-sm px-5 py-2.5 text-center transform active:scale-95 transition-all duration-200"
-              onClick={() => {
-                // Implement your "Mark as Resolved" logic here
-                onClose();
-              }}
+              onClick={handleManage}
+              className=" cursor-pointer flex items-center justify-center py-2.5 px-5 text-sm font-medium text-[#ffde17] bg-gray-900 rounded-lg hover:bg-gray-800 focus:ring-0.5 focus:outline-none focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
+              aria-label="Open manage view"
             >
-              Mark as Resolved
+              Manage Issue
             </button>
             <button
               type="button"
-              className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] focus:z-10 focus:ring-4 focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
+              className=" cursor-pointer py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] focus:z-10 focus:ring-0.5 focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
               onClick={onClose}
             >
               Close
