@@ -726,7 +726,7 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
                     <input
                       id={`checkbox-${issue._id}`}
                       type="checkbox"
-                      className="w-4 h-4 text-black bg-white border border-[#E0E0E0] rounded focus:ring-black focus:ring-2"
+                      className="w-4 h-4 text-black bg-white border border-[#E0E0E0] rounded focus:ring-black focus:ring-1"
                     />
                     <label
                       htmlFor={`checkbox-${issue._id}`}
