@@ -5,8 +5,7 @@ import { GoChevronDown } from "react-icons/go";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaEye } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
-
-
+import IssueModal from "@/components/IssueModal";
 
 const Reports = () => {
   // Define the Issue interface for type safety
@@ -45,6 +44,10 @@ const Reports = () => {
   const [sortColumn, setSortColumn] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [filterStatus, setFilterStatus] = useState("");
+
+  // State variables for the modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -120,8 +123,6 @@ const Reports = () => {
 
   // useEffect hook for fetching data from the server using EventSource
   useEffect(() => {
-    // This is a placeholder since the actual API is not provided.
-    // In a real application, you would connect to a real-time data source.
     const mockIssues: Issue[] = [
       {
         _id: "65f3f01c8a1e67c8d9e2b10a",
@@ -404,7 +405,7 @@ const Reports = () => {
     setIssues(mockIssues);
     setLoading(false);
 
-    // Original EventSource logic
+    // EventSource logic
     // const eventSource = new EventSource("/api/admin/issues/stream");
     // eventSource.onopen = () => {
     //   setLoading(false);
@@ -429,7 +430,7 @@ const Reports = () => {
     // return () => {
     //   eventSource.close();
     // };
-    return () => {};
+    // return () => {};
   }, []);
 
   // Pagination calculations
@@ -449,6 +450,18 @@ const Reports = () => {
     setCurrentPage(page);
   };
 
+  // Handler to open the modal and set the selected issue
+  const handleViewIssue = (issue: Issue) => {
+    setSelectedIssue(issue);
+    setIsModalOpen(true);
+  };
+
+  // Handler to close the modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedIssue(null);
+  };
+
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pages = [];
@@ -466,7 +479,30 @@ const Reports = () => {
   };
 
   if (loading) {
-    return <div className="text-center p-8">Loading reports...</div>;
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-50">
+        <svg
+          className="animate-spin h-6 w-6 text-[#ffde17]"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          ></path>
+        </svg>
+      </div>
+    );
   }
 
   if (error) {
@@ -658,25 +694,26 @@ const Reports = () => {
                     day: "numeric",
                   })}
                 </td>
-<td className="py-2 px-4 flex items-center justify-start gap-5">
-  <button
-    type="button"
-    className="cursor-pointer text-black font-semibold border-[0.5px] border-gray-300 rounded-md px-4 py-2 transform active:scale-95 transition-transform duration-200 flex items-center gap-2
+                <td className="py-2 px-4 flex items-center justify-start gap-5">
+                  <button
+                    type="button"
+                    className="cursor-pointer text-black font-semibold border-[0.5px] border-gray-300 rounded-md px-4 py-2 transform active:scale-95 transition-transform duration-200 flex items-center gap-2
     hover:bg-gray-100 hover:border-gray-400"
-  >
-    <FaEye />
-    View
-  </button>
+                    onClick={() => handleViewIssue(issue)}
+                  >
+                    <FaEye />
+                    View
+                  </button>
 
-  <button
-    type="button"
-    className="cursor-pointer bg-gray-900 text-[#ffde17] px-4 py-2 rounded-md font-semibold hover:bg-gray-900 transition-colors duration-200 transform active:scale-95 flex items-center gap-2
+                  <button
+                    type="button"
+                    className="cursor-pointer bg-gray-900 text-[#ffde17] px-4 py-2 rounded-md font-semibold hover:bg-gray-900 transition-colors duration-200 transform active:scale-95 flex items-center gap-2
     hover:text-[#ffea40] hover:shadow-lg"
-  >
-    <LuClipboardList />
-    Manage
-  </button>
-</td>
+                  >
+                    <LuClipboardList />
+                    Manage
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -726,12 +763,13 @@ const Reports = () => {
                   </p>
                 </div>
                 <div className="mt-4 flex gap-3 justify-end">
-                  <a
-                    href="#"
+                  <button
+                    type="button"
                     className="text-black hover:underline font-medium text-sm transition-colors duration-200"
+                    onClick={() => handleViewIssue(issue)}
                   >
                     View
-                  </a>
+                  </button>
                   <a
                     href="#"
                     className="bg-[#ffde17] text-black px-4 py-2 rounded-lg hover:bg-gray-900 hover:text-[#ffde17] transition-colors duration-200 text-sm font-medium"
@@ -803,6 +841,14 @@ const Reports = () => {
           </li>
         </ul>
       </nav>
+
+      {/* The Issue Modal is rendered here, outside the main flow */}
+      {/* It will only be visible when isModalOpen is true and a selectedIssue exists */}
+      <IssueModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        issue={selectedIssue}
+      />
     </div>
   );
 };
