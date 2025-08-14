@@ -26,7 +26,9 @@ export async function login(
     // 1) Find admin by email
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      logger.warn(`Failed login attempt: Admin with email: (${email}) not found.`);
+      logger.warn(
+        `Failed login attempt: Admin with email: (${email}) not found.`
+      );
       await recordAuditTrail({
         browser,
         ipAddress,
@@ -41,7 +43,11 @@ export async function login(
         },
         dataInTransit: { emailEntered: email },
       });
-      return { status: 401, message: "Login failed: Invalid credentials", data: null };
+      return {
+        status: 401,
+        message: "Login failed: Invalid credentials",
+        data: null,
+      };
     }
 
     // 2) Compare passwords
@@ -62,12 +68,17 @@ export async function login(
         },
         dataInTransit: { enteredEmail: email },
       });
-      return { status: 401, message: "Login failed: Invalid credentials", data: null };
+      return {
+        status: 401,
+        message: "Login failed: Invalid credentials",
+        data: null,
+      };
     }
 
     // 3) Check for active session
     const existing = await findActiveSessionForUser(admin._id.toString());
     if (existing) {
+      logger.warn("Login attempt denied - already logged in on another device");
       await recordAuditTrail({
         browser,
         ipAddress,
@@ -85,7 +96,11 @@ export async function login(
           currentDeviceId: existing.deviceId,
         },
       });
-      return { status: 403, message: "You are already logged in on another device.", data: null };
+      return {
+        status: 403,
+        message: "You are already logged in on another device.",
+        data: null,
+      };
     }
 
     // 4) Create new session
@@ -100,6 +115,7 @@ export async function login(
     admin.lastLogin = new Date();
     await admin.save();
 
+    logger.info(`Admin ${admin.fullName} successfully logged in`);
     await recordAuditTrail({
       browser,
       ipAddress,

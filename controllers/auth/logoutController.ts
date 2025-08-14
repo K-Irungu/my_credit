@@ -1,11 +1,12 @@
 // controllers/auth/logoutController.ts
 import { cookies } from "next/headers";
-import { revokeSessionById } from "@/utils/session";
+import { revokeSessionById, hashSessionId } from "@/utils/session";
 import { clearSessionCookie } from "@/utils/cookies";
 import logger from "@/lib/logger";
 import { recordAuditTrail } from "@/utils/recordAuditTrail";
 import { connectToDB } from "@/lib/db";
 import Session from "@/models/session";
+import crypto from "crypto";
 
 interface Context {
   browser: string;
@@ -42,9 +43,13 @@ export async function logout(deviceId: string, context: Context) {
       return { status: 401, message: "No active session", data: null };
     }
 
-    // --- Look up session in DB ---
-    const session = await Session.findOne({ sessionHash: sessionId })
-      .populate("userId", "fullName role _id");
+    // --- Look up session in DB by hash ---
+    const hashedSessionId = hashSessionId(sessionId)
+
+    const session = await Session.findOne({
+      sessionHash: hashedSessionId,
+    }).populate("userId", "fullName role _id");
+
 
     if (!session) {
       logger.warn("Logout failed: Session cookie present but no DB record");
@@ -52,7 +57,8 @@ export async function logout(deviceId: string, context: Context) {
         browser,
         ipAddress,
         deviceId,
-        activity: "Logout failed - session cookie present but no matching DB record",
+        activity:
+          "Logout failed - session cookie present but no matching DB record",
         endpoint,
         userDetails: {
           userId: "unknown",

@@ -47,7 +47,7 @@ export default function Sidemenu() {
 
     try {
       const browser = navigator.userAgent;
-      const logoutEndpoint = "/api/auth/login";
+      const logoutEndpoint = "/api/auth/logout";
 
       const response = await fetch(logoutEndpoint, {
         method: "POST",
