@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { v4 as uuidv4 } from 'uuid'; // Import the uuid library
 
 export interface IssueDocument extends Document {
   implicatedPersonel: {
@@ -18,6 +19,7 @@ export interface IssueDocument extends Document {
   status: "pending" | "investigating" | "responded" | "resolved";
   source: "ussd" | "web";
   filename?: string; // Optional field for the name of the media file
+  REF: string; // The unique reference field
   createdAt: Date;
   updatedAt: Date;
 }
@@ -54,7 +56,12 @@ const issueSchema = new Schema<IssueDocument>(
     },
     filename: {
       type: String,
-      required: false, // Optional: allow issue submission without a file
+      required: false,
+    },
+    REF: { // The new REF field
+      type: String,
+      required: true,
+      unique: true,
     },
   },
   {

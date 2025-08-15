@@ -4,6 +4,11 @@ import path from "path";
 import Issue from "@/models/issue";
 import Reporter from "@/models/reporter";
 import { connectToDB } from "@/lib/db";
+import { v4 as uuidv4 } from "uuid";
+
+function generateUniqueREF(): string {
+  return uuidv4();
+}
 
 export async function submitIssue(req: Request) {
   try {
@@ -44,27 +49,30 @@ export async function submitIssue(req: Request) {
 
     // First, save the reporter details
     const newReporter = new Reporter({
-      firstName: whistleblower.firstName || "",
-      lastName: whistleblower.lastName || "",
-      companyLocation: whistleblower.companyLocation || "",
-      rolePosition: whistleblower.rolePosition || "",
-      email: whistleblower.email || "",
-      phoneNumber: whistleblower.phoneNumber || "",
-      requiresFeedback: whistleblower.requiresFeedback || "",
+      firstName: whistleblower.firstName,
+      lastName: whistleblower.lastName,
+      email: whistleblower.email,
+      phoneNumber: whistleblower.phoneNumber,
+      company: whistleblower.company || null,
+      role: whistleblower.role || null,
+      requiresFeedback: whistleblower.wantsFeedback || false, // Mapping 'wantsFeedback' from whistleblower object to 'requiresFeedback' in schema
+      REF: generateUniqueREF(),
     });
     const reporter = await newReporter.save();
+
 
     // Then, create the issue using the new reporter's ID
     const newIssue = new Issue({
       implicatedPersonel: personnel,
       malpractice: malpractice,
-      reporter: reporter._id,
+      reporter: reporter._id, // Use the ID of the saved reporter
       source: "web",
       filename: supportingFileName,
+      REF: generateUniqueREF(),
     });
     await newIssue.save();
 
-    console.log(newIssue);
+    // console.log(newIssue);
 
     return NextResponse.json(
       {

@@ -7,7 +7,8 @@ export interface IReporter extends Document {
   phoneNumber: string;
   company?: string;
   role?: string;
-  wantsFeedback: boolean;
+  requiresFeedback: boolean;
+  REF: string; // The unique reference field
 }
 
 const ReporterSchema: Schema<IReporter> = new Schema(
@@ -44,10 +45,15 @@ const ReporterSchema: Schema<IReporter> = new Schema(
       default: null,
       trim: true,
     },
-    wantsFeedback: {
+    requiresFeedback: {
       type: Boolean,
       required: true,
       default: false,
+    },
+    REF: { // The new REF field
+      type: String,
+      required: true,
+      unique: true,
     },
   },
   {

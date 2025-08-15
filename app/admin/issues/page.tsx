@@ -10,6 +10,13 @@ import { fetchIssuesAndExportToExcel } from "../../../utils/fetchIssuesAndConver
 import { HiOutlineDownload } from "react-icons/hi";
 import toast from "react-hot-toast";
 
+
+
+interface Reporter {
+  _id: string;
+  REF: string; // The unique reference number for the reporter
+}
+
 const Issues = () => {
   // Define the Issue interface for type safety
   interface Issue {
@@ -27,12 +34,13 @@ const Issues = () => {
       description: string;
       isOngoing: string;
     };
-    reporter: string;
+    reporter: Reporter;
     status: string;
     source: string;
     filename: string;
     createdAt: string;
     updatedAt: string;
+    REF: string
     __v: number;
   }
 
@@ -48,7 +56,7 @@ const Issues = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [filterStatus, setFilterStatus] = useState("");
 
-const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
+  const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
   const [isDownloading, setIsDownloading] = useState(false);
 
   // State variables for the modal
@@ -91,12 +99,13 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
   useEffect(() => {
     let result = [...issues];
 
+
     // Apply search filter
     if (searchTerm.trim()) {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(
         (issue) =>
-          issue._id.toLowerCase().includes(searchLower) ||
+          issue.REF.toLowerCase().includes(searchLower) ||
           `${issue.implicatedPersonel.firstName} ${issue.implicatedPersonel.lastName}`
             .toLowerCase()
             .includes(searchLower) ||
@@ -137,294 +146,17 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
     }
 
     setFilteredAndSortedIssues(result);
-    setCurrentPage(1); // Reset to first page when filters change
+    // setCurrentPage(1); // Reset to first page when filters change
+
+    // Check if the current page is still valid after filtering and sorting
+    const newTotalPages = Math.ceil(result.length / itemsPerPage);
+    if (currentPage > newTotalPages && newTotalPages > 0) {
+      setCurrentPage(newTotalPages);
+    } else if (newTotalPages === 0) {
+      setCurrentPage(1);
+    }
   }, [issues, searchTerm, filterStatus, sortColumn, sortDirection]);
-    // const mockIssues: Issue[] = [
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b10a",
-    //     implicatedPersonel: {
-    //       firstName: "John",
-    //       lastName: "Doe",
-    //       companyLocation: "Nairobi",
-    //       rolePosition: "Manager",
-    //       phoneNumber: "0712345678",
-    //     },
-    //     malpractice: {
-    //       type: "Fraud",
-    //       location: "Nairobi",
-    //       description: "Financial fraud case.",
-    //       isOngoing: "Yes",
-    //     },
-    //     reporter: "admin",
-    //     status: "pending",
-    //     source: "whistleblower",
-    //     filename: "report1.pdf",
-    //     createdAt: "2024-03-14T10:00:00Z",
-    //     updatedAt: "2024-03-14T10:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b10b",
-    //     implicatedPersonel: {
-    //       firstName: "Jane",
-    //       lastName: "Smith",
-    //       companyLocation: "Mombasa",
-    //       rolePosition: "Clerk",
-    //       phoneNumber: "0723456789",
-    //     },
-    //     malpractice: {
-    //       type: "Theft",
-    //       location: "Mombasa",
-    //       description: "Office supplies theft.",
-    //       isOngoing: "No",
-    //     },
-    //     reporter: "admin",
-    //     status: "resolved",
-    //     source: "whistleblower",
-    //     filename: "report2.pdf",
-    //     createdAt: "2024-03-13T12:00:00Z",
-    //     updatedAt: "2024-03-13T12:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b10c",
-    //     implicatedPersonel: {
-    //       firstName: "Peter",
-    //       lastName: "Jones",
-    //       companyLocation: "Kisumu",
-    //       rolePosition: "Supervisor",
-    //       phoneNumber: "0734567890",
-    //     },
-    //     malpractice: {
-    //       type: "Corruption",
-    //       location: "Kisumu",
-    //       description: "Bribery and corruption.",
-    //       isOngoing: "Yes",
-    //     },
-    //     reporter: "admin",
-    //     status: "pending",
-    //     source: "whistleblower",
-    //     filename: "report3.pdf",
-    //     createdAt: "2024-03-12T08:00:00Z",
-    //     updatedAt: "2024-03-12T08:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b10d",
-    //     implicatedPersonel: {
-    //       firstName: "Alice",
-    //       lastName: "Williams",
-    //       companyLocation: "Nairobi",
-    //       rolePosition: "Analyst",
-    //       phoneNumber: "0745678901",
-    //     },
-    //     malpractice: {
-    //       type: "Misconduct",
-    //       location: "Nairobi",
-    //       description: "Workplace harassment.",
-    //       isOngoing: "No",
-    //     },
-    //     reporter: "admin",
-    //     status: "closed",
-    //     source: "whistleblower",
-    //     filename: "report4.pdf",
-    //     createdAt: "2024-03-11T14:00:00Z",
-    //     updatedAt: "2024-03-11T14:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b10e",
-    //     implicatedPersonel: {
-    //       firstName: "Bob",
-    //       lastName: "Brown",
-    //       companyLocation: "Mombasa",
-    //       rolePosition: "Driver",
-    //       phoneNumber: "0756789012",
-    //     },
-    //     malpractice: {
-    //       type: "Theft",
-    //       location: "Mombasa",
-    //       description: "Vehicle fuel theft.",
-    //       isOngoing: "No",
-    //     },
-    //     reporter: "admin",
-    //     status: "resolved",
-    //     source: "whistleblower",
-    //     filename: "report5.pdf",
-    //     createdAt: "2024-03-10T09:00:00Z",
-    //     updatedAt: "2024-03-10T09:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b10f",
-    //     implicatedPersonel: {
-    //       firstName: "Charlie",
-    //       lastName: "Davis",
-    //       companyLocation: "Kisumu",
-    //       rolePosition: "Guard",
-    //       phoneNumber: "0767890123",
-    //     },
-    //     malpractice: {
-    //       type: "Misconduct",
-    //       location: "Kisumu",
-    //       description: "Negligence on duty.",
-    //       isOngoing: "Yes",
-    //     },
-    //     reporter: "admin",
-    //     status: "pending",
-    //     source: "whistleblower",
-    //     filename: "report6.pdf",
-    //     createdAt: "2024-03-09T16:00:00Z",
-    //     updatedAt: "2024-03-09T16:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b110",
-    //     implicatedPersonel: {
-    //       firstName: "Diana",
-    //       lastName: "Evans",
-    //       companyLocation: "Nairobi",
-    //       rolePosition: "IT Technician",
-    //       phoneNumber: "0778901234",
-    //     },
-    //     malpractice: {
-    //       type: "Data Breach",
-    //       location: "Nairobi",
-    //       description: "Unauthorized data access.",
-    //       isOngoing: "Yes",
-    //     },
-    //     reporter: "admin",
-    //     status: "pending",
-    //     source: "whistleblower",
-    //     filename: "report7.pdf",
-    //     createdAt: "2024-03-08T11:00:00Z",
-    //     updatedAt: "2024-03-08T11:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b111",
-    //     implicatedPersonel: {
-    //       firstName: "Frank",
-    //       lastName: "Garcia",
-    //       companyLocation: "Mombasa",
-    //       rolePosition: "Engineer",
-    //       phoneNumber: "0789012345",
-    //     },
-    //     malpractice: {
-    //       type: "Fraud",
-    //       location: "Mombasa",
-    //       description: "Falsified project reports.",
-    //       isOngoing: "No",
-    //     },
-    //     reporter: "admin",
-    //     status: "resolved",
-    //     source: "whistleblower",
-    //     filename: "report8.pdf",
-    //     createdAt: "2024-03-07T13:00:00Z",
-    //     updatedAt: "2024-03-07T13:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b112",
-    //     implicatedPersonel: {
-    //       firstName: "Grace",
-    //       lastName: "Harris",
-    //       companyLocation: "Kisumu",
-    //       rolePosition: "Sales Rep",
-    //       phoneNumber: "0790123456",
-    //     },
-    //     malpractice: {
-    //       type: "Theft",
-    //       location: "Kisumu",
-    //       description: "Misappropriation of company funds.",
-    //       isOngoing: "No",
-    //     },
-    //     reporter: "admin",
-    //     status: "closed",
-    //     source: "whistleblower",
-    //     filename: "report9.pdf",
-    //     createdAt: "2024-03-06T15:00:00Z",
-    //     updatedAt: "2024-03-06T15:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b113",
-    //     implicatedPersonel: {
-    //       firstName: "Henry",
-    //       lastName: "Ismail",
-    //       companyLocation: "Nairobi",
-    //       rolePosition: "Accountant",
-    //       phoneNumber: "0701234567",
-    //     },
-    //     malpractice: {
-    //       type: "Fraud",
-    //       location: "Nairobi",
-    //       description: "Invoice manipulation.",
-    //       isOngoing: "Yes",
-    //     },
-    //     reporter: "admin",
-    //     status: "pending",
-    //     source: "whistleblower",
-    //     filename: "report10.pdf",
-    //     createdAt: "2024-03-05T17:00:00Z",
-    //     updatedAt: "2024-03-05T17:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b114",
-    //     implicatedPersonel: {
-    //       firstName: "Irene",
-    //       lastName: "Jackson",
-    //       companyLocation: "Mombasa",
-    //       rolePosition: "HR Manager",
-    //       phoneNumber: "0712345678",
-    //     },
-    //     malpractice: {
-    //       type: "Misconduct",
-    //       location: "Mombasa",
-    //       description: "Violation of company policy.",
-    //       isOngoing: "No",
-    //     },
-    //     reporter: "admin",
-    //     status: "resolved",
-    //     source: "whistleblower",
-    //     filename: "report11.pdf",
-    //     createdAt: "2024-03-04T10:00:00Z",
-    //     updatedAt: "2024-03-04T10:00:00Z",
-    //     __v: 0,
-    //   },
-    //   {
-    //     _id: "65f3f01c8a1e67c8d9e2b115",
-    //     implicatedPersonel: {
-    //       firstName: "Jack",
-    //       lastName: "King",
-    //       companyLocation: "Kisumu",
-    //       rolePosition: "Engineer",
-    //       phoneNumber: "0723456789",
-    //     },
-    //     malpractice: {
-    //       type: "Theft",
-    //       location: "Kisumu",
-    //       description: "Equipment theft.",
-    //       isOngoing: "Yes",
-    //     },
-    //     reporter: "admin",
-    //     status: "pending",
-    //     source: "whistleblower",
-    //     filename: "report12.pdf",
-    //     createdAt: "2024-03-03T12:00:00Z",
-    //     updatedAt: "2024-03-03T12:00:00Z",
-    //     __v: 0,
-    //   },
-    // ];
-
-    // setIssues(mockIssues);
-    
-    
-// A new state to keep track of issue IDs
-
-  // A new state to control the initial load logic
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   // Modified useEffect for SSE
   useEffect(() => {
@@ -437,23 +169,29 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
 
     eventSource.onmessage = (event) => {
       try {
-        const { issues: newIssuesList } = JSON.parse(event.data);
+
+        const newIssuesList  = JSON.parse(event.data);
+
         if (newIssuesList && Array.isArray(newIssuesList)) {
           // If this is the initial load, populate the issueIds set
           if (!initialLoadComplete) {
-            const ids = new Set(newIssuesList.map(issue => issue._id));
+            const ids = new Set(newIssuesList.map((issue) => issue.REF));
             setIssueIds(ids);
             setInitialLoadComplete(true); // Mark initial load as complete
           } else {
             // After initial load, check for newly added issues
-            const latestIssue = newIssuesList[newIssuesList.length - 1];
-            if (!issueIds.has(latestIssue._id)) {
-              toast.success(`A new issue has been reported!`);
+            // const latestIssue = newIssuesList[newIssuesList.length - 1];
+            const latestIssue = newIssuesList[0];
+            if (!issueIds.has(latestIssue.REF)) {
+              toast.success(`A new issue has been submitted!`);
               // Add the new ID to the set to prevent repeat notifications
-              setIssueIds(prev => new Set(prev).add(latestIssue._id));
+              setIssueIds((prev) => new Set(prev).add(latestIssue.REF));
             }
           }
           setIssues(newIssuesList);
+
+          console.log("New list of issues at Frontend: ",newIssuesList)
+
         } else {
           setError("Failed to process data from server.");
         }
@@ -550,7 +288,7 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
   }
 
   async function handleDownloadAll() {
-    // Define the desired output filename
+    // Define the  output filename
     const OUTPUT_FILE = "all_issues.xlsx";
 
     // Call the helper function
@@ -718,18 +456,18 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
           <tbody>
             {currentIssues.map((issue) => (
               <tr
-                key={issue._id}
+                key={issue.REF}
                 className="bg-white border-b border-[#E0E0E0] hover:bg-[#fefadd]"
               >
                 <td className="w-4 p-4">
                   <div className="flex items-center">
                     <input
-                      id={`checkbox-${issue._id}`}
+                      id={`checkbox-${issue.REF}`}
                       type="checkbox"
                       className="w-4 h-4 text-black bg-white border border-[#E0E0E0] rounded focus:ring-black focus:ring-1"
                     />
                     <label
-                      htmlFor={`checkbox-${issue._id}`}
+                      htmlFor={`checkbox-${issue.REF}`}
                       className="sr-only"
                     >
                       Select issue
@@ -737,7 +475,7 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
                   </div>
                 </td>
                 <td className="px-6 py-4 font-medium text-[#333333]">
-                  #{issue._id.slice(0, 8)}...
+                  #{issue.REF.slice(0, 8)}...
                 </td>
                 <td className="px-6 py-4">
                   {issue.implicatedPersonel.firstName}{" "}
@@ -793,12 +531,12 @@ const [issueIds, setIssueIds] = useState<Set<string>>(new Set());
           {Array.isArray(currentIssues) &&
             currentIssues.map((issue) => (
               <div
-                key={issue._id}
+                key={issue.REF}
                 className="bg-white border border-[#E0E0E0] rounded-lg p-5 hover:shadow-sm transition-shadow duration-200"
               >
                 <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3 mb-3">
                   <h4 className="font-semibold text-sm text-[#333333]">
-                    Issue ID: #{issue._id.slice(0, 8)}
+                    Issue ID: #{issue.REF.slice(0, 8)}
                   </h4>
                   <div className="text-yellow-500 font-semibold text-sm">
                     {issue.status}

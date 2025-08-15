@@ -14,33 +14,40 @@ import domToImage from "dom-to-image";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 // Import the XLSX library for Excel exports
 import { RiSaveLine } from "react-icons/ri";
-
 import * as XLSX from "xlsx";
 
-// Define the Issue interface for type safety
-interface Issue {
+
+// Define the Reporter interface for the populated reporter object
+interface Reporter {
   _id: string;
-  implicatedPersonel: {
-    firstName: string;
-    lastName: string;
-    companyLocation: string;
-    rolePosition: string;
-    phoneNumber: string;
-  };
-  malpractice: {
-    type: string;
-    location: string;
-    description: string;
-    isOngoing: string;
-  };
-  reporter: string;
-  status: string;
-  source: string;
-  filename: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  REF: string; // The unique reference number for the reporter
 }
+
+// Define the Issue interface for type safety, now with a populated reporter
+  interface Issue {
+    _id: string;
+    implicatedPersonel: {
+      firstName: string;
+      lastName: string;
+      companyLocation: string;
+      rolePosition: string;
+      phoneNumber: string;
+    };
+    malpractice: {
+      type: string;
+      location: string;
+      description: string;
+      isOngoing: string;
+    };
+    reporter: Reporter;
+    status: string;
+    source: string;
+    filename: string;
+    createdAt: string;
+    updatedAt: string;
+    REF: string
+    __v: number;
+  }
 
 // Define the props interface for the IssueModal component
 interface IssueModalProps {
@@ -48,6 +55,8 @@ interface IssueModalProps {
   onClose: () => void;
   issue: Issue | null;
 }
+
+
 
 // A simple utility function to wrap text for PDF-Lib
 const wrapText = (
@@ -150,7 +159,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
   const copyToClipboard = () => {
     if (issue) {
       const el = document.createElement("textarea");
-      el.value = issue._id;
+      el.value = issue.REF;
       document.body.appendChild(el);
       el.select();
       document.execCommand("copy");
@@ -188,7 +197,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           const pngDataUrl = await domToImage.toPng(modalRef.current);
           const link = document.createElement("a");
           link.href = pngDataUrl;
-          link.download = `issue-report-${issue._id.slice(0, 8)}.png`;
+          link.download = `issue-report-${issue.REF.slice(0, 8)}.png`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -204,7 +213,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
         const line_height = 20;
 
         // Title
-        page.drawText(`Issue Report: ${issue._id.slice(0, 8)}`, {
+        page.drawText(`Issue Report: ${issue.REF.slice(0, 8)}`, {
           x,
           y,
           size: 24,
@@ -372,7 +381,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
 
         const link = document.createElement("a");
         link.href = pdfUrl;
-        link.download = `issue-report-${issue._id.slice(0, 8)}.pdf`;
+        link.download = `issue-report-${issue.REF.slice(0, 8)}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -394,7 +403,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
     try {
       const data = [
         {
-          "Issue ID": issue._id,
+          "Issue REF": issue.REF,
           Status: issue.status,
           "Malpractice Type": issue.malpractice.type,
           "Malpractice Location": issue.malpractice.location,
@@ -415,7 +424,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
       const worksheet = XLSX.utils.json_to_sheet(data);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Issue Report");
-      XLSX.writeFile(workbook, `issue-report-${issue._id.slice(0, 8)}.xlsx`);
+      XLSX.writeFile(workbook, `issue-report-${issue.REF.slice(0, 8)}.xlsx`);
     } catch (error) {
       console.error("Failed to generate Excel file:", error);
     } finally {
@@ -424,7 +433,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
   };
 
   const handleManage = () => {
-    console.log("Navigating to manage view for issue ID:", issue._id);
+    console.log("Navigating to manage view for issue ID:", issue.REF);
     // In a real application, you would use a router here to navigate
     // e.g., router.push(`/manage/${issue._id}`);
   };
@@ -449,7 +458,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
             <h3 className="text-xl font-medium flex items-center">
               Issue:{" "}
               <span className="ml-2 font-mono text-base md:text-lg">
-                {issue._id.slice(0, 8)}...
+                {issue.REF.slice(0, 8)}...
               </span>
               <button
                 onClick={copyToClipboard}
@@ -510,7 +519,9 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
               </p>
               <p className="leading-relaxed text-[#333333]">
                 <span className="font-bold text-black">Reporter:</span>{" "}
-                {issue.reporter}
+                {issue.reporter.REF}
+
+            
               </p>
               <p className="leading-relaxed text-[#333333]">
                 <span className="font-bold text-black">Source:</span>{" "}
@@ -661,20 +672,20 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center gap-3 p-4 border-t border-[#E0E0E0] rounded-b sticky bottom-0 z-10 bg-white">
-            <button
-              onClick={handleManage}
-              className=" cursor-pointer flex items-center justify-center py-2.5 px-5 text-sm font-medium text-[#ffde17] bg-gray-900 rounded-lg hover:bg-gray-800 focus:ring-0.5 focus:outline-none focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
-              aria-label="Open manage view"
-            >
-              Manage Issue
-            </button>
+          <div className="flex items-center gap-3 p-4 border-t border-[#E0E0E0] rounded-b sticky bottom-0 z-10 bg-white justify-between">
             <button
               type="button"
-              className=" cursor-pointer py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] focus:z-10 focus:ring-0.5 focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
+              className="w-32 cursor-pointer py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] focus:z-10 focus:ring-0.5 focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
               onClick={onClose}
             >
               Close
+            </button>
+            <button
+              onClick={handleManage}
+              className="w-32 cursor-pointer flex items-center justify-center py-2.5 px-5 text-sm font-medium text-[#ffde17] bg-gray-900 rounded-lg hover:bg-gray-800 focus:ring-0.5 focus:outline-none focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
+              aria-label="Open manage view"
+            >
+              Manage Issue
             </button>
           </div>
         </div>
