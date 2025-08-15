@@ -16,6 +16,7 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { RiSaveLine } from "react-icons/ri";
 import * as XLSX from "xlsx";
 
+import { useRouter } from "next/navigation";
 
 // Define the Reporter interface for the populated reporter object
 interface Reporter {
@@ -24,30 +25,30 @@ interface Reporter {
 }
 
 // Define the Issue interface for type safety, now with a populated reporter
-  interface Issue {
-    _id: string;
-    implicatedPersonel: {
-      firstName: string;
-      lastName: string;
-      companyLocation: string;
-      rolePosition: string;
-      phoneNumber: string;
-    };
-    malpractice: {
-      type: string;
-      location: string;
-      description: string;
-      isOngoing: string;
-    };
-    reporter: Reporter;
-    status: string;
-    source: string;
-    filename: string;
-    createdAt: string;
-    updatedAt: string;
-    REF: string
-    __v: number;
-  }
+interface Issue {
+  _id: string;
+  implicatedPersonel: {
+    firstName: string;
+    lastName: string;
+    companyLocation: string;
+    rolePosition: string;
+    phoneNumber: string;
+  };
+  malpractice: {
+    type: string;
+    location: string;
+    description: string;
+    isOngoing: string;
+  };
+  reporter: Reporter;
+  status: string;
+  source: string;
+  filename: string;
+  createdAt: string;
+  updatedAt: string;
+  REF: string;
+  __v: number;
+}
 
 // Define the props interface for the IssueModal component
 interface IssueModalProps {
@@ -55,8 +56,6 @@ interface IssueModalProps {
   onClose: () => void;
   issue: Issue | null;
 }
-
-
 
 // A simple utility function to wrap text for PDF-Lib
 const wrapText = (
@@ -95,6 +94,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
   const [isExportDropdownOpen, setIsExportDropdownOpen] = useState(false);
   // State for loading status during file generation
   const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
   // useRef hook to create a reference to the modal content container
   const modalRef = useRef<HTMLDivElement>(null);
@@ -170,6 +170,10 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
     }
   };
 
+    const handleManage = () => {
+
+  router.push(`/admin/case-management?ref=${issue.REF}`);
+  };
   // Helper function to get the status badge styles
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -430,13 +434,12 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
     } finally {
       setIsLoading(false);
     }
+
+
+    
   };
 
-  const handleManage = () => {
-    console.log("Navigating to manage view for issue ID:", issue.REF);
-    // In a real application, you would use a router here to navigate
-    // e.g., router.push(`/manage/${issue._id}`);
-  };
+
 
   return (
     // The main modal container with transition for the backdrop
@@ -520,8 +523,6 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
               <p className="leading-relaxed text-[#333333]">
                 <span className="font-bold text-black">Reporter:</span>{" "}
                 {issue.reporter.REF}
-
-            
               </p>
               <p className="leading-relaxed text-[#333333]">
                 <span className="font-bold text-black">Source:</span>{" "}

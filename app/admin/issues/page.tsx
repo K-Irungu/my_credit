@@ -9,8 +9,7 @@ import IssueModal from "@/components/IssueModal";
 import { fetchIssuesAndExportToExcel } from "../../../utils/fetchIssuesAndConvertToExcel";
 import { HiOutlineDownload } from "react-icons/hi";
 import toast from "react-hot-toast";
-
-
+import { useRouter } from "next/navigation";
 
 interface Reporter {
   _id: string;
@@ -40,7 +39,7 @@ const Issues = () => {
     filename: string;
     createdAt: string;
     updatedAt: string;
-    REF: string
+    REF: string;
     __v: number;
   }
 
@@ -85,6 +84,10 @@ const Issues = () => {
     return path.split(".").reduce((current, key) => current?.[key], obj);
   };
 
+  const router = useRouter();
+  const handleManage = (issueRef: string) => {
+    router.push(`/admin/case-management?ref=${issueRef}`);
+  };
   // Sort function to handle column clicks
   const handleSort = (column: string) => {
     if (sortColumn === column) {
@@ -98,7 +101,6 @@ const Issues = () => {
   // useEffect hook to filter and sort issues whenever dependencies change
   useEffect(() => {
     let result = [...issues];
-
 
     // Apply search filter
     if (searchTerm.trim()) {
@@ -156,7 +158,7 @@ const Issues = () => {
       setCurrentPage(1);
     }
   }, [issues, searchTerm, filterStatus, sortColumn, sortDirection]);
-const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   // Modified useEffect for SSE
   useEffect(() => {
@@ -169,8 +171,7 @@ const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
     eventSource.onmessage = (event) => {
       try {
-
-        const newIssuesList  = JSON.parse(event.data);
+        const newIssuesList = JSON.parse(event.data);
 
         if (newIssuesList && Array.isArray(newIssuesList)) {
           // If this is the initial load, populate the issueIds set
@@ -189,9 +190,6 @@ const [initialLoadComplete, setInitialLoadComplete] = useState(false);
             }
           }
           setIssues(newIssuesList);
-
-          console.log("New list of issues at Frontend: ",newIssuesList)
-
         } else {
           setError("Failed to process data from server.");
         }
@@ -514,6 +512,7 @@ const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
                   <button
                     type="button"
+                    onClick={() => handleManage(issue.REF)}
                     className="cursor-pointer bg-gray-900 text-[#ffde17] px-4 py-2 rounded-md font-semibold hover:bg-gray-900 transition-colors duration-200 transform active:scale-95 flex items-center gap-2
     hover:text-[#ffea40] hover:shadow-lg"
                   >
