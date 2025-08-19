@@ -114,9 +114,9 @@ export default function Sidemenu() {
       path: "/admin/issues",
     },
     {
-      name: "Case Management",
+      name: "Issue Management",
       icon: BriefcaseIcon,
-      path: "/admin/case-management",
+      path: "/admin/issue-management",
     },
     { name: "Analytics", icon: ChartBarIcon, path: "/admin/analytics" },
     { name: "Settings", icon: Cog6ToothIcon, path: "/admin/settings" },

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { login } from "@/controllers/auth/loginController";
-import { serialize } from "cookie";
 
 export async function POST(req: Request) {
   try {

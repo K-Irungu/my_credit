@@ -16,7 +16,7 @@ export interface IssueDocument extends Document {
     isOngoing: string;
   };
   reporter: mongoose.Types.ObjectId;
-  status: "pending" | "investigating" | "responded" | "resolved";
+  status: "submitted" | "investigating" | "responded" | "resolved";
   source: "ussd" | "web";
   filename?: string; // Optional field for the name of the media file
   REF: string; // The unique reference field
@@ -46,8 +46,8 @@ const issueSchema = new Schema<IssueDocument>(
     },
     status: {
       type: String,
-      enum: ["pending", "investigating", "responded", "resolved"],
-      default: "pending",
+      enum: ["submitted", "investigating", "responded", "resolved"],
+      default: "submitted",
     },
     source: {
       type: String,

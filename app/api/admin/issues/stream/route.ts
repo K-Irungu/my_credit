@@ -13,7 +13,7 @@ export async function GET() {
       const fetchAndSendIssues = async () => {
         try {
           await connectToDB();
-          const issues = await Issue.find({}).sort({ createdAt: -1 }).populate("reporter").lean();
+          const issues = await Issue.find({}).sort({ createdAt: -1 }).lean();
           const data = `data: ${JSON.stringify(issues)}\n\n`;
           controller.enqueue(data);
         } catch (error) {

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/db";
 import Admin from "../../models/admin";
 import logger from "@/lib/logger";
-import { sendEmail } from "../../utils/sendEmail";
+import { sendEmail } from "@/utils/sendEmail"; 
 
 export async function signup(
   fullName: string,

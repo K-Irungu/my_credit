@@ -172,7 +172,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
 
     const handleManage = () => {
 
-  router.push(`/admin/case-management?ref=${issue.REF}`);
+  router.push(`/admin/issue-management?ref=${issue.REF}`);
   };
   // Helper function to get the status badge styles
   const getStatusBadge = (status: string) => {
@@ -357,14 +357,14 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           color: rgb(0, 0, 0),
         });
         y -= line_height;
-        page.drawText(`Reporter: ${issue.reporter}`, {
-          x,
-          y,
-          size: 12,
-          font,
-          color: rgb(0.2, 0.2, 0.2),
-        });
-        y -= line_height;
+        // page.drawText(`Reporter: ${issue.reporter}`, {
+        //   x,
+        //   y,
+        //   size: 12,
+        //   font,
+        //   color: rgb(0.2, 0.2, 0.2),
+        // });
+        // y -= line_height;
         page.drawText(`Source: ${issue.source}`, {
           x,
           y,
@@ -413,7 +413,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           "Malpractice Location": issue.malpractice.location,
           "Malpractice Description": issue.malpractice.description,
           "Is Ongoing": issue.malpractice.isOngoing,
-          Reporter: issue.reporter,
+          // Reporter: issue.reporter,
           Source: issue.source,
           "Implicated Personel Name": `${issue.implicatedPersonel.firstName} ${issue.implicatedPersonel.lastName}`,
           "Implicated Personel Role": issue.implicatedPersonel.rolePosition,
@@ -520,10 +520,10 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
                 </span>{" "}
                 {issue.malpractice.location}
               </p>
-              <p className="leading-relaxed text-[#333333]">
+              {/* <p className="leading-relaxed text-[#333333]">
                 <span className="font-bold text-black">Reporter:</span>{" "}
                 {issue.reporter.REF}
-              </p>
+              </p> */}
               <p className="leading-relaxed text-[#333333]">
                 <span className="font-bold text-black">Source:</span>{" "}
                 {issue.source}
