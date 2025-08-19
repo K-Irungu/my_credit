@@ -5,6 +5,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import MainTitle from "@/components/MainTitle";
 import { Toaster } from "react-hot-toast";
+import { SessionProvider } from "next-auth/react";
+import SessionProviderWrapper from "@/components/SessionProviderWrapper"; // Import the new wrapper component
+
 
 // app/layout.tsx
 import { connectToDB } from "@/lib/db";
@@ -34,43 +37,43 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
       >
-        <Toaster
-          position="top-right"
-          containerClassName="p-12"
-          reverseOrder={false}
-          toastOptions={{
-            duration: 4000, // ⏳ Toast will stay for 5 seconds
+        <SessionProviderWrapper>
+          <Toaster
+            position="top-right"
+            containerClassName="p-12"
+            reverseOrder={false}
+            toastOptions={{
+              duration: 4000, // ⏳ Toast will stay for 5 seconds
 
-            className:
-              "text-base font-bold uppercase px-6 py-5 rounded-lg shadow-lg",
-            style: {
-              fontSize: "15px",
-              padding: "15px",
-              maxWidth: "400px",
-            },
-            success: {
+              className:
+                "text-base font-bold uppercase px-6 py-5 rounded-lg shadow-lg",
               style: {
-                background: "#16a34a",
-                color: "#ffffff",
-                border: "2px solid white",
+                fontSize: "15px",
+                padding: "15px",
+                maxWidth: "400px",
               },
-            },
-            error: {
-              style: {
-                background: "#dc2626", // A red tone (can adjust to match your palette)
-                color: "#ffffff",
-                border: "2px solid white",
+              success: {
+                style: {
+                  background: "#16a34a",
+                  color: "#ffffff",
+                  border: "2px solid white",
+                },
               },
-            },
-          }}
-        />{" "}
-        <Header />
-        <MainTitle />
-        {children}
-        <Footer />
+              error: {
+                style: {
+                  background: "#dc2626", // A red tone (can adjust to match your palette)
+                  color: "#ffffff",
+                  border: "2px solid white",
+                },
+              },
+            }}
+          />{" "}
+          <Header />
+          <MainTitle />
+          {children}
+          <Footer />
+        </SessionProviderWrapper>
       </body>
     </html>
   );
 }
-
-

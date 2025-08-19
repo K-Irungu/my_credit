@@ -254,7 +254,6 @@ const Issues = () => {
     return pages;
   };
 
-
   if (error) {
     return <div className="text-center p-8 text-red-500">Error: {error}</div>;
   }
@@ -268,9 +267,14 @@ const Issues = () => {
   }
   return (
     // Main container with fixed height using flexbox
-    <div className="flex flex-col h-[calc(100vh-100px)] shadow-sm rounded-lg">
+    <div className="flex flex-col h-[calc(100vh-100px)] shadow-sm rounded-lg bg-white ">
+                   <div>
+              <h1 className="text-2xl font-bold text-gray-900 px-4 pt-4">Issues</h1>
+              </div> 
       {/* Search, sort, filter controls */}
       <div className="p-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-[#E0E0E0] shrink-0">
+
+
         <div className="relative w-full lg:w-80">
           <input
             type="text"

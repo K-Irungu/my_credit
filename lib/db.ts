@@ -1,5 +1,6 @@
 import mongoose, { Mongoose } from 'mongoose';
 
+
 // Fix the red underlines by declaring the custom property on the global object
 declare global {
   var _mongoose: {

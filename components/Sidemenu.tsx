@@ -107,7 +107,7 @@ export default function Sidemenu() {
   };
   // --- Menu Items ---
   const menuItems: MenuItem[] = [
-    { name: "Dashboard", icon: HomeIcon, path: "/admin" },
+    { name: "Dashboard", icon: HomeIcon, path: "/admin/dashboard" },
     {
       name: "Issues",
       icon: ClipboardDocumentListIcon,

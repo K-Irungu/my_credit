@@ -3,8 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react"; // 1. Import hooks
 
 const Login = () => {
+  // Add this line to use the session hook
+  const { data: session } = useSession();
+
   // State
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,7 +66,7 @@ const Login = () => {
 
       setTimeout(() => {
         toast.success(data.message || "Login successful");
-        router.push("/admin");
+        router.push("/admin/dashboard");
       }, 4500);
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -145,6 +149,38 @@ const Login = () => {
             {isLoading ? <>Loading...</> : "Sign In"}
           </button>
         </form>
+
+        {/* Google Login Section */}
+        {session ? (
+          <div className="flex flex-col items-center mt-6">
+            <p className="text-gray-600">Signed in as {session.user?.email}</p>
+            <button
+              onClick={() => signOut()}
+              className="mt-2 text-sm text-red-500 hover:underline"
+            >
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center mt-6">
+            <div className="relative flex items-center w-full my-4">
+              <div className="flex-grow border-t border-gray-400"></div>
+              <span className="flex-shrink mx-4 text-gray-400">OR</span>
+              <div className="flex-grow border-t border-gray-400"></div>
+            </div>
+            <button
+              onClick={() => signIn("google")}
+              className="flex items-center justify-center w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            >
+              <img
+                src="/images/google-icon.svg"
+                alt="Google Icon"
+                className="w-5 h-5 mr-2"
+              />
+              Sign in with Google
+            </button>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="mt-6 text-right text-sm text-[#58595d]">
