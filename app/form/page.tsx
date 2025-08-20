@@ -58,8 +58,10 @@ const initialWhistleblower: Whistleblower = {
 
 function MainForm() {
   const [personnel, setPersonnel] = useState<Personnel>(initialPersonnel);
-  const [malpractice, setMalpractice] = useState<Malpractice>(initialMalpractice);
-  const [whistleblower, setWhistleblower] = useState<Whistleblower>(initialWhistleblower);
+  const [malpractice, setMalpractice] =
+    useState<Malpractice>(initialMalpractice);
+  const [whistleblower, setWhistleblower] =
+    useState<Whistleblower>(initialWhistleblower);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const resetForm = () => {
@@ -70,7 +72,9 @@ function MainForm() {
 
   const handleChange =
     (setState: React.Dispatch<React.SetStateAction<any>>) =>
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
       const { name, value } = e.target;
       setState((prev: any) => ({ ...prev, [name]: value }));
     };
@@ -87,9 +91,9 @@ function MainForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const formData = new FormData();
+    const browser = navigator.userAgent;
 
-    formData.append("personnel", JSON.stringify(personnel));
+    const formData = new FormData();
 
     const malpracticeDataToSend = {
       type: malpractice.type,
@@ -97,16 +101,17 @@ function MainForm() {
       description: malpractice.description,
       isOngoing: malpractice.isOngoing,
     };
+
+    formData.append("personnel", JSON.stringify(personnel));
     formData.append("malpractice", JSON.stringify(malpracticeDataToSend));
-
     formData.append("whistleblower", JSON.stringify(whistleblower));
-
-    if (malpractice.supportingFile) {
-      formData.append("supportingFile", malpractice.supportingFile);
-    }
+    formData.append("browser", browser);
+    malpractice.supportingFile && formData.append("supportingFile", malpractice.supportingFile);
 
     try {
-      const res = await fetch("/api/reporter/submitIssue", {
+      const submitIssueEndpoint = "/api/reporter/submitIssue";
+
+      const res = await fetch(submitIssueEndpoint, {
         method: "POST",
         body: formData,
       });
@@ -120,7 +125,9 @@ function MainForm() {
       resetForm();
     } catch (err: any) {
       console.error(err);
-      toast.error(err.message || "Failed to send submission. Please try again.");
+      toast.error(
+        err.message || "Failed to send submission. Please try again."
+      );
     }
   };
 
@@ -187,18 +194,30 @@ interface SectionCardProps {
   title: string;
   fields: [string, string][];
   values: Record<string, any>;
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => void;
   required?: boolean;
   children?: React.ReactNode;
 }
 
-function SectionCard({ title, fields, values, onChange, required, children }: SectionCardProps) {
+function SectionCard({
+  title,
+  fields,
+  values,
+  onChange,
+  required,
+  children,
+}: SectionCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 space-y-4">
       <h2 className="text-md font-semibold text-gray-800 mb-4">{title}</h2>
       {fields.map(([name, label]) => (
         <div key={name}>
-          <label htmlFor={name} className="block text-xs font-medium text-gray-700 mb-1">
+          <label
+            htmlFor={name}
+            className="block text-xs font-medium text-gray-700 mb-1"
+          >
             {label}
           </label>
           <input
@@ -219,17 +238,27 @@ function SectionCard({ title, fields, values, onChange, required, children }: Se
 
 interface MalpracticeCardProps {
   values: Malpractice;
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => void;
   onFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-function MalpracticeCard({ values, onChange, onFileChange }: MalpracticeCardProps) {
+function MalpracticeCard({
+  values,
+  onChange,
+  onFileChange,
+}: MalpracticeCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 space-y-4">
-      <h2 className="text-md font-semibold text-gray-800">Malpractice Details*</h2>
+      <h2 className="text-md font-semibold text-gray-800">
+        Malpractice Details*
+      </h2>
 
       <div>
-        <label className="block mb-1 text-xs font-medium text-gray-900">Type of Malpractice</label>
+        <label className="block mb-1 text-xs font-medium text-gray-900">
+          Type of Malpractice
+        </label>
         <select
           name="type"
           value={values.type}
@@ -247,7 +276,9 @@ function MalpracticeCard({ values, onChange, onFileChange }: MalpracticeCardProp
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Location
+        </label>
         <input
           type="text"
           name="location"
@@ -259,7 +290,9 @@ function MalpracticeCard({ values, onChange, onFileChange }: MalpracticeCardProp
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Description*</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Description*
+        </label>
         <textarea
           name="description"
           rows={4}
@@ -271,7 +304,9 @@ function MalpracticeCard({ values, onChange, onFileChange }: MalpracticeCardProp
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">Attach Supporting File</label>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Attach Supporting File
+        </label>
         <input
           type="file"
           name="supportingFile"
@@ -301,7 +336,14 @@ interface RadioGroupProps {
   required?: boolean;
 }
 
-function RadioGroup({ label, name, options, selected, onChange, required }: RadioGroupProps) {
+function RadioGroup({
+  label,
+  name,
+  options,
+  selected,
+  onChange,
+  required,
+}: RadioGroupProps) {
   return (
     <div className="pt-2">
       <p className="block text-xs font-medium text-gray-700 mb-2">{label}</p>

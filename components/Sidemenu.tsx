@@ -118,7 +118,7 @@ export default function Sidemenu() {
       icon: BriefcaseIcon,
       path: "/admin/issue-management",
     },
-    { name: "Analytics", icon: ChartBarIcon, path: "/admin/analytics" },
+    // { name: "Analytics", icon: ChartBarIcon, path: "/admin/analytics" },
     { name: "Settings", icon: Cog6ToothIcon, path: "/admin/settings" },
   ];
 
