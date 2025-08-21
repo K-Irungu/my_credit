@@ -177,7 +177,7 @@ useEffect(() => {
             item.danger
               ? "hover:bg-red-600 text-red-600"
               : item.special
-              ? "bg-black text-white hover:bg-[#ffde17] hover:text-black"
+              ? "bg-gray-900 text-white hover:bg-[#ffde17] hover:text-black"
               : finalIsActive
               ? "bg-[#ffde17] text-black "
               : "hover:bg-[#ffde17] hover:text-black text-black"
@@ -252,6 +252,7 @@ useEffect(() => {
               action: handleOpenLogoutModal,
               special: true,
             }}
+
           />
         </div>
 
