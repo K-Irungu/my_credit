@@ -150,8 +150,9 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Google Login Section */}
-        {session ? (
+
+{/* Google Login section */}
+        {/* {session ? (
           <div className="flex flex-col items-center mt-6">
             <p className="text-gray-600">Signed in as {session.user?.email}</p>
             <button
@@ -180,7 +181,7 @@ const Login = () => {
               Sign in with Google
             </button>
           </div>
-        )}
+        )} */}
 
         {/* Footer */}
         <div className="mt-6 text-right text-sm text-[#58595d]">
