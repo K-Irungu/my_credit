@@ -1,59 +1,64 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IReporter extends Document {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  company?: string;
-  role?: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+  company: string | null;
+  role: string | null;
   requiresFeedback: boolean;
   REF: string; // The unique reference field
+  isAnonymous: boolean;
 }
 
 const ReporterSchema: Schema<IReporter> = new Schema(
   {
     firstName: {
-      type: String,
-      required: true,
+      type: String || null,
       trim: true,
+
     },
     lastName: {
-      type: String,
-      required: true,
+      type: String || null,
       trim: true,
+
     },
     email: {
-      type: String,
-      required: true,
+      type: String || null,
       lowercase: true,
-      // unique: true,
       trim: true,
+
     },
     phoneNumber: {
-      type: String,
-      required: true,
+      type: String || null,
       trim: true,
+
     },
     company: {
-      type: String,
-      default: null,
+      type: String || null,
+
       trim: true,
     },
     role: {
-      type: String,
-      default: null,
+      type: String || null,
+
       trim: true,
     },
     requiresFeedback: {
       type: Boolean,
-      required: true,
       default: false,
+
     },
-    REF: { // The new REF field
+    REF: {
       type: String,
       required: true,
       unique: true,
+    },
+    isAnonymous: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {

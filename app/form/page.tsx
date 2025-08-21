@@ -2,7 +2,6 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import { toast } from "react-hot-toast";
-import SuccessModal from "../../components/SuccesModal";
 
 interface Personnel {
   firstName: string;
@@ -20,13 +19,13 @@ interface Malpractice {
   isOngoing: string;
 }
 
-interface Whistleblower {
+interface Reporter {
   firstName: string;
   lastName: string;
-  companyLocation: string;
-  rolePosition: string;
   email: string;
   phoneNumber: string;
+  companyLocation: string;
+  rolePosition: string;
   requiresFeedback: string;
 }
 
@@ -46,7 +45,7 @@ const initialMalpractice: Malpractice = {
   isOngoing: "",
 };
 
-const initialWhistleblower: Whistleblower = {
+const initialReporter: Reporter = {
   firstName: "",
   lastName: "",
   companyLocation: "",
@@ -56,18 +55,19 @@ const initialWhistleblower: Whistleblower = {
   requiresFeedback: "",
 };
 
-function MainForm() {
+function MainForm({ setIsLoading }: { setIsLoading: React.Dispatch<React.SetStateAction<boolean>> }) {
+
   const [personnel, setPersonnel] = useState<Personnel>(initialPersonnel);
   const [malpractice, setMalpractice] =
     useState<Malpractice>(initialMalpractice);
-  const [whistleblower, setWhistleblower] =
-    useState<Whistleblower>(initialWhistleblower);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [reporter, setReporter] = useState<Reporter>(initialReporter);
+  const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
 
   const resetForm = () => {
     setPersonnel(initialPersonnel);
     setMalpractice(initialMalpractice);
-    setWhistleblower(initialWhistleblower);
+    setReporter(initialReporter);
+    setIsAnonymous(false);
   };
 
   const handleChange =
@@ -90,9 +90,9 @@ function MainForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const browser = navigator.userAgent;
-
     const formData = new FormData();
 
     const malpracticeDataToSend = {
@@ -102,27 +102,51 @@ function MainForm() {
       isOngoing: malpractice.isOngoing,
     };
 
-    formData.append("personnel", JSON.stringify(personnel));
+    formData.append("implicatedPersonnel", JSON.stringify(personnel));
     formData.append("malpractice", JSON.stringify(malpracticeDataToSend));
-    formData.append("whistleblower", JSON.stringify(whistleblower));
     formData.append("browser", browser);
-    malpractice.supportingFile && formData.append("supportingFile", malpractice.supportingFile);
+    formData.append("isAnonymous", isAnonymous.toString());
+
+    malpractice.supportingFile
+      ? formData.append("supportingFile", malpractice.supportingFile)
+      : null;
+    !isAnonymous ? formData.append("reporter", JSON.stringify(reporter)) : null;
 
     try {
       const submitIssueEndpoint = "/api/reporter/submitIssue";
-
       const res = await fetch(submitIssueEndpoint, {
         method: "POST",
         body: formData,
       });
 
+      const submissionResponse = await res.json();
+      // console.log(submissionResponse);
+
       if (!res.ok) {
         const errorData = await res.json();
+
+        setTimeout(
+          () => toast.error(submissionResponse.message || ""),
+          500
+        );
+        setTimeout(() => setIsLoading(false), 4500);
+
         throw new Error(errorData.message || "Failed to submit");
       }
 
-      toast.success("Submission sent successfully. Thank you.");
-      resetForm();
+      
+      setTimeout(() => {
+        toast.success(`${submissionResponse.message} Issue REF: ${submissionResponse.data.newIssueId}` || "");
+      }, 500);
+        setTimeout(() => 
+          
+          {setIsLoading(false)
+          resetForm();
+          }, 4500);
+
+
+
+
     } catch (err: any) {
       console.error(err);
       toast.error(
@@ -132,6 +156,8 @@ function MainForm() {
   };
 
   return (
+    <>
+
     <div className="bg-[#fefadd] flex flex-col">
       <main className="container mx-auto px-4 py-5 flex-1 w-full max-w-7xl">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -149,11 +175,13 @@ function MainForm() {
               onChange={handleChange(setPersonnel)}
               required
             />
+
             <MalpracticeCard
               values={malpractice}
               onChange={handleChange(setMalpractice)}
               onFileChange={handleFileChange}
             />
+
             <SectionCard
               title="Whistleblower Info (Optional)"
               fields={[
@@ -164,18 +192,17 @@ function MainForm() {
                 ["email", "Email"],
                 ["phoneNumber", "Phone Number"],
               ]}
-              values={whistleblower}
-              onChange={handleChange(setWhistleblower)}
-            >
-              <RadioGroup
-                label="Do you require feedback on the outcome?"
-                name="requiresFeedback"
-                options={["Yes", "No"]}
-                selected={whistleblower.requiresFeedback}
-                onChange={handleChange(setWhistleblower)}
-              />
-            </SectionCard>
+              values={{
+                ...reporter,
+                setIsAnonymous,
+                resetReporter: () => setReporter(initialReporter),
+              }}
+              onChange={handleChange(setReporter)}
+              required={!isAnonymous}
+              disabled={isAnonymous}
+            ></SectionCard>
           </div>
+
           <div className="flex justify-end">
             <button
               type="submit"
@@ -187,6 +214,7 @@ function MainForm() {
         </form>
       </main>
     </div>
+    </>
   );
 }
 
@@ -198,6 +226,7 @@ interface SectionCardProps {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => void;
   required?: boolean;
+  disabled?: boolean;
   children?: React.ReactNode;
 }
 
@@ -207,11 +236,33 @@ function SectionCard({
   values,
   onChange,
   required,
+  disabled,
   children,
 }: SectionCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 space-y-4">
       <h2 className="text-md font-semibold text-gray-800 mb-4">{title}</h2>
+
+      {/* ✅ Anonymous toggle moved to the top */}
+      {title.includes("Whistleblower") && (
+        <div className="flex items-center space-x-2 mb-4">
+          <label className="text-sm font-medium text-gray-700">
+            Stay Anonymous
+          </label>
+          <input
+            type="checkbox"
+            checked={disabled}
+            onChange={(e) => {
+              values.setIsAnonymous?.(e.target.checked);
+              if (e.target.checked) {
+                values.resetReporter?.();
+              }
+            }}
+            className="w-4 h-4 text-yellow-500 bg-gray-100 border-gray-300 rounded focus:ring-yellow-500"
+          />
+        </div>
+      )}
+
       {fields.map(([name, label]) => (
         <div key={name}>
           <label
@@ -226,11 +277,15 @@ function SectionCard({
             id={name}
             value={values[name] || ""}
             onChange={onChange}
-            className="bg-yellow-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5"
-            required={required}
+            disabled={disabled}
+            className={`bg-yellow-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 ${
+              disabled ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            required={required && !disabled}
           />
         </div>
       ))}
+
       {children}
     </div>
   );
@@ -372,7 +427,38 @@ function RadioGroup({
 }
 
 function App() {
-  return <MainForm />;
+    const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <>
+          {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-50">
+          <svg
+            className="animate-spin h-6 w-6 text-[#ffde17]"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8H4z"
+            ></path>
+          </svg>
+        </div>
+      )}
+    
+      <MainForm  setIsLoading={setIsLoading}/>
+    </>
+  );
 }
 
 export default App;

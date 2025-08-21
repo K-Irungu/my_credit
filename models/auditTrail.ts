@@ -21,7 +21,7 @@ const auditTrailSchema = new Schema<AuditTrailDocument>(
   {
     browser: { type: String, required: true },
     ipAddress: { type: String, required: true },
-    deviceId: { type: String , required: false },
+    deviceId: { type: String, required: false },
     activity: { type: String, required: true, trim: true },
     endpoint: { type: String, required: true, trim: true },
     userDetails: {
@@ -33,15 +33,15 @@ const auditTrailSchema = new Schema<AuditTrailDocument>(
       model: {
         type: String,
         required: true,
-        enum: ["Admin", "Reporter", "Unknown"], 
+        enum: ["Admin", "Reporter", "Unknown"],
       },
-      timestamp: { type: Date, default: Date.now },
+
       name: { type: String, required: false },
       role: { type: String, required: false },
     },
     dataInTransit: { type: Schema.Types.Mixed, required: false },
   },
-  { timestamps: false }
+  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
 
 export default mongoose.models.AuditTrail ||

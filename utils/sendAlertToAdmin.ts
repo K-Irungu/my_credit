@@ -20,12 +20,45 @@ interface Reporter {
   role: string | null;
   requiresFeedback: boolean;
   REF: string;
+  isAnonymous: boolean;
 }
 
+// Interface for the ImplicatedPersonnel data
+interface ImplicatedPersonnel {
+  firstName: string;
+  lastName: string;
+  companyLocation: string;
+  rolePosition: string;
+  phoneNumber: string;
+}
+
+// Interface for the Malpractice data
+interface Malpractice {
+  type: string;
+  location: string;
+  description: string;
+  isOngoing: string;
+}
+
+// Interface for the Issue model
+export interface Issue {
+  _id: Types.ObjectId;
+  implicatedPersonel: ImplicatedPersonnel;
+  malpractice: Malpractice;
+  reporter: Types.ObjectId; // A reference to the Reporter document
+  source: string;
+  filename: string | null;
+  REF: string;
+  ipAddress: string;
+  endpoint: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 export async function sendAlertToAdmin(
   browser: string,
   context: Context,
-  reporter: Reporter
+  newIssue: Issue,
+  newReporter: Reporter
 ): Promise<void> {
   logger.info("Preparing alert email for new issue submission");
   
@@ -40,12 +73,17 @@ export async function sendAlertToAdmin(
 
     const subject = "New Issue Submitted to Whistleblower Portal";
     
-    // Plain text email content
-    const text = `Hello,
+
+const text = `Hello,
 
 A new issue has been submitted to the whistleblower portal.
+Details:
+- **Issue REF:** ${newIssue.REF}
+- **Type of Malpractice:** ${newIssue.malpractice.type}
+- **Date Reported:** ${newIssue.createdAt.toISOString()}
 
-Please log in to the portal to view and manage the issue.
+Please log in to the portal to view and manage the issue:
+https://mycredit.co.ke/admin/issues/${newIssue.REF}
 
 Thank you,
 The MyCredit Team`;
@@ -58,6 +96,9 @@ The MyCredit Team`;
     
     logger.info(`Alert email successfully sent to admin: ${admin.email}`);
 
+    // console.log(newReporter)
+
+
     await recordAuditTrail({
       browser,
       ipAddress,
@@ -65,10 +106,10 @@ The MyCredit Team`;
       deviceId: null,
       endpoint,
       userDetails: {
-        userId: reporter._id,
+        userId: newReporter._id,
         model: "Reporter",
-        name: `${reporter.firstName} ${reporter.lastName}`,
-        role: reporter.role,
+        name: `${newReporter.firstName} ${newReporter.lastName}`,
+        role: newReporter.role,
       },
       dataInTransit: { emailContent: text },
     });
