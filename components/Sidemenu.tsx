@@ -163,7 +163,7 @@ export default function Sidemenu() {
   return (
     <>
       <aside
-        className={`h-[calc(100vh-64px)] bg-white border-r border-gray-200 text-black flex flex-col transition-all duration-300 ${
+        className={`hidden sm:block h-[calc(100vh-64px)] bg-white border-r border-gray-200 text-black flex flex-col transition-all duration-300 ${
           open ? "w-64" : "w-20"
         }`}
         role="navigation"

@@ -9,7 +9,14 @@ import {
   FaHistory,
   FaSearch,
   FaExclamationTriangle,
+  FaBan
 } from "react-icons/fa";
+
+
+import { FiRefreshCcw } from "react-icons/fi";
+import { MdOutlineEmail } from "react-icons/md";
+
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import issue from "@/models/issue";
@@ -685,7 +692,7 @@ const IssueManagement: React.FC = () => {
                               </label>
                               <select
                                 id="status"
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-[0.5px] focus:ring-[#ffde17] focus:border-[#ffde17] bg-gray-50 transition duration-200"
+                                className="cursor-pointer w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-[0.5px] focus:ring-[#ffde17] focus:border-[#ffde17] bg-gray-50 transition duration-200"
                                 value={statusUpdate}
                                 onChange={handleStatusChange}
                               >
@@ -702,7 +709,7 @@ const IssueManagement: React.FC = () => {
                           <div className="mt-6 flex flex-col sm:flex-row gap-4">
                             <button
                               type="button"
-                              className={`cursor-pointer flex-1 w-full font-bold py-3 rounded-md transition duration-300 ease-in-out transform-gpu ${
+                              className={`cursor-pointer flex-1 w-full font-bold py-3 rounded-md transition duration-300 ease-in-out transform-gpu flex items-center justify-center gap-2 ${
                                 statusUpdate === currentIssue.status
                                   ? "bg-[#3C3C3C] text-[#FAD41A] cursor-not-allowed"
                                   : "bg-[#FAD41A] text-[#3C3C3C] hover:text-[#FAD41A] hover:bg-[#3C3C3C] active:scale-95"
@@ -711,9 +718,14 @@ const IssueManagement: React.FC = () => {
                               disabled={statusUpdate === currentIssue.status}
                             >
                               {statusUpdate === currentIssue.status ? (
-                                <>No Changes</>
+                                <>
+                                <FaBan className="w-4 h-4" />
+                                No Changes</>
                               ) : (
-                                <>Update Case Information</>
+                                <>
+                                    <FiRefreshCcw className="w-4 h-4" />
+                                  <span>Update Issue Information</span>
+                                </>
                               )}
                             </button>
 
@@ -722,8 +734,11 @@ const IssueManagement: React.FC = () => {
                               className="cursor-pointer flex-1 px-6 py-3 bg-gray-600 text-white rounded-md font-semibold hover:bg-gray-700 transition-colors duration-200 flex items-center justify-center gap-2 shadow-sm"
                               onClick={handleSendNotification}
                             >
-                              <FaCommentAlt className="w-4 h-4" />
-                              Send Notification
+
+                                    <FaCommentAlt className="w-4 h-4" />
+
+                              
+                              Notify Reporter
                             </button>
                           </div>
                         </div>
@@ -731,7 +746,6 @@ const IssueManagement: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Communications Tab */}
                   {/* Communications Tab */}
                   {activeTab === "communications" && (
                     <div className="lg:col-span-3 space-y-6">
@@ -741,7 +755,7 @@ const IssueManagement: React.FC = () => {
                             Communications History
                           </h3>
                           <button
-                            className="flex items-center gap-2 px-4 py-2 bg-[#ffde17] text-gray-900 rounded-md hover:bg-[#e6c500] transition-colors text-sm font-medium"
+                            className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-[#ffde17] text-gray-900 rounded-md hover:bg-[#e6c500] transition-colors text-sm font-medium"
                             onClick={handleSendNotification}
                           >
                             <FaPlus className="w-3 h-3" />
@@ -818,7 +832,7 @@ const IssueManagement: React.FC = () => {
                             </p>
                             {reporterEmails !== null && (
                               <button
-                                className="px-6 py-2 bg-[#ffde17] text-gray-900 rounded-md hover:bg-[#e6c500] transition-colors font-medium flex items-center gap-2 mx-auto"
+                                className="cursor-pointer px-6 py-2 bg-[#ffde17] text-gray-900 rounded-md hover:bg-[#e6c500] transition-colors font-medium flex items-center gap-2 mx-auto"
                                 onClick={handleSendNotification}
                               >
                                 <FaPlus className="w-3 h-3" />
@@ -863,10 +877,7 @@ const IssueManagement: React.FC = () => {
                           </div>
                         ) : (
                           <div className="text-center py-12">
-                            <p className="text-gray-500">No attachments yet</p>
-                            <button className="mt-4 px-4 py-2 bg-[#ffde17] text-black rounded-md hover:bg-[#e6c500] transition-colors">
-                              Upload File
-                            </button>
+                            <p className="text-gray-500">No attachments</p>
                           </div>
                         )}
                       </div>
@@ -887,11 +898,7 @@ const IssueManagement: React.FC = () => {
                   Enter an issue reference number in the search field above to
                   view and manage issue.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-
-
-
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto"></div>
               </div>
             </div>
           )}
