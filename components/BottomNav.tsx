@@ -63,7 +63,7 @@ const BottomNav: React.FC = () => {
                 if (item.action) item.action();
                 else if (item.path) router.push(item.path);
               }}
-              className={`inline-flex flex-col items-center justify-center px-5 transition-colors group border-x border-gray-200
+              className={`inline-flex flex-col items-center justify-center px-5 transition-colors group border-[0.5px] border-gray-200
                 ${isActive ? "bg-[#ffde17]" : "hover:bg-[#ffde17]"}`}
             >
               <Icon

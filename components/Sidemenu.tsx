@@ -13,6 +13,13 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/24/outline";
+import { CiLogout } from "react-icons/ci";
+
+
+import Image from "next/image";
+
+import { FaUserCircle } from "react-icons/fa";
+
 
 interface MenuItem {
   name: string;
@@ -24,26 +31,51 @@ interface MenuItem {
 }
 
 export default function Sidemenu() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [deviceId, setDeviceId] = useState("");
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [adminName, setAdminName] = useState<string | null>(null);
 
   const router = useRouter();
   const pathname = usePathname(); // Get the current URL path
 
   //  Generate or load deviceId on mount
-  useEffect(() => {
+  useEffect( () => {
     let storedDeviceId = localStorage.getItem("deviceId");
     if (!storedDeviceId) {
       storedDeviceId = crypto.randomUUID();
       localStorage.setItem("deviceId", storedDeviceId);
     }
     setDeviceId(storedDeviceId);
+
   }, []);
 
-  // ❗ New: useEffect hook to handle clicks outside the modal
+// Use effect to get admin name
+useEffect(() => {
+  const fetchAdminName = async () => {
+    try {
+      const res = await fetch("/api/admin/profile");
+      if (!res.ok) throw new Error("Failed to fetch admin");
+
+      const data = await res.json();
+      setAdminName(data?.name || "Admin"); // set state properly
+      console.log("Admin fetched:", data?.name);
+    } catch (err) {
+      console.error("getAdminName error:", err);
+      setAdminName("Admin"); // fallback
+    }
+  };
+
+  fetchAdminName();
+}, []);
+
+
+
+
+
+  //  New: useEffect hook to handle clicks outside the modal
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       // If the modal ref exists and the click is outside the modal content, close the modal
@@ -139,8 +171,8 @@ export default function Sidemenu() {
             router.push(item.path);
           }
         }}
-        className={`cursor-pointer flex items-center gap-3 w-full text-left transition-all duration-200 rounded-lg
-          ${open ? "px-4 py-3" : "p-3"}
+        className={`cursor-pointer flex items-center justify-center gap-3 w-full text-left transition-all duration-200 rounded-lg
+          ${open ? "px-4 py-3 justify-start" : "p-3"}
           ${
             item.danger
               ? "hover:bg-red-600 text-red-600"
@@ -163,27 +195,43 @@ export default function Sidemenu() {
   return (
     <>
       <aside
-        className={`hidden sm:block h-[calc(100vh-64px)] bg-white border-r border-gray-200 text-black flex flex-col transition-all duration-300 ${
+        className={`hidden sm:flex h-[calc(100vh-64px)] bg-white border-r border-gray-200 text-black flex flex-col transition-all duration-300 ${
           open ? "w-64" : "w-20"
         }`}
         role="navigation"
       >
         {/* Header / Toggle */}
-        <div className="flex items-center justify-between py-3 border-b border-gray-200">
+        <div
+          className={`flex items-center ${
+            open ? "justify-between" : "justify-center"
+          } py-3 px-3 border-b border-gray-200 bg-white`}
+        >
           {open && (
-            <span className="font-bold text-lg tracking-tight mx-auto">
-              Admin Panel
-            </span>
+            <div className="flex items-center w-full pl-4 gap-3 py-2">
+              {/* Avatar Circle */}
+              <div className=" overflow-hidden  flex items-center justify-center">
+                <FaUserCircle className="w-11 h-11 text-gray-600" />
+              </div>
+
+              {/* User Info */}
+              <div className="flex flex-col leading-tight">
+                <span className="text-base font-medium text-gray-900">
+                  {adminName || "Admin "}
+                </span>
+                <span className="text-sm text-gray-600">Administrator</span>
+              </div>
+            </div>
           )}
+
           <button
             onClick={() => setOpen(!open)}
-            className="px-4 py-3 rounded-lg hover:bg-[#ffde17] transition-colors cursor-pointer mx-auto"
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors  "
             aria-label="Toggle menu"
           >
             {open ? (
-              <ChevronDoubleLeftIcon className="h-5 w-5" />
+              <ChevronDoubleLeftIcon className="h-5 w-5 text-gray-600" />
             ) : (
-              <ChevronDoubleRightIcon className="h-5 w-5" />
+              <ChevronDoubleRightIcon className="h-5 w-5 text-gray-600" />
             )}
           </button>
         </div>
@@ -200,7 +248,7 @@ export default function Sidemenu() {
           <MenuButton
             item={{
               name: "Logout",
-              icon: ArrowLeftOnRectangleIcon,
+              icon: CiLogout,
               action: handleOpenLogoutModal,
               special: true,
             }}

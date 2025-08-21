@@ -451,39 +451,43 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           }`}
         >
           {/* Modal Header */}
-          <div className="flex items-center justify-between p-3 sm:p-4 border-b rounded-t border-[#E0E0E0] bg-[#ffde17] text-black sticky top-0 z-10 ">
-            <h3 className="text-xl font-medium flex items-center">
-              Issue:{" "}
-              <span className="ml-2 font-mono text-base md:text-lg">
-                {issue.REF.slice(0, 8)}...
-              </span>
-              <button
-                onClick={copyToClipboard}
-                className="cursor-pointer flex items-center gap-1 ml-2 w-24 px-2 py-1 justify-center text-black bg-white/20 hover:bg-white/40 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#ffde17]"
-                aria-label="Copy issue ID"
-              >
-                {isCopied ? (
-                  <Check className="w-4 h-4" />
-                ) : (
-                  <Clipboard className="w-4 h-4" />
-                )}
-                <span className="text-sm font-semibold ">
-                  {isCopied ? "Copied!" : "Copy ID"}
-                </span>
-              </button>
-              <span className="ml-4 text-xl font-bold hidden md:block">
-                - {issue.malpractice.type}
-              </span>
-            </h3>
-            <button
-              type="button"
-              className="cursor-pointer text-black bg-transparent hover:bg-gray-900 hover:text-[#ffde17] rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center transition-colors duration-200"
-              onClick={onClose}
-              aria-label="Close modal"
-            >
-              <FaTimes className="w-3 h-3" />
-            </button>
-          </div>
+      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-2 p-3 sm:p-4 border-b rounded-t border-[#E0E0E0] bg-[#ffde17] text-black sticky top-0 z-10">
+  <div className="flex flex-wrap items-center text-xl font-medium">
+    <span className="mr-2">Issue:</span>
+    <span className="font-mono text-base md:text-lg">
+      {issue.REF.slice(0, 8)}...
+    </span>
+
+    <button
+      onClick={copyToClipboard}
+      className="cursor-pointer flex items-center gap-1 ml-2 w-auto px-2 py-1 justify-center text-black bg-white/20 hover:bg-white/40 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#ffde17]"
+      aria-label="Copy issue ID"
+    >
+      {isCopied ? (
+        <Check className="w-4 h-4" />
+      ) : (
+        <Clipboard className="w-4 h-4" />
+      )}
+      <span className="text-sm font-semibold">
+        {isCopied ? "Copied!" : "Copy ID"}
+      </span>
+    </button>
+
+    <span className="ml-4 text-base md:text-xl font-bold hidden sm:inline-block truncate max-w-xs capitalize">
+      - {issue.malpractice.type}
+    </span>
+  </div>
+
+  <button
+    type="button"
+    className="cursor-pointer text-black bg-transparent hover:bg-gray-900 hover:text-[#ffde17] rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center transition-colors duration-200"
+    onClick={onClose}
+    aria-label="Close modal"
+  >
+    <FaTimes className="w-3 h-3" />
+  </button>
+</div>
+
 
 
 
