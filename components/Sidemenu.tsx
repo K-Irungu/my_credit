@@ -308,12 +308,12 @@ useEffect(() => {
             <h3 className="text-2xl font-bold text-center text-gray-900 mt-4 mb-2 tracking-tight">
               Confirm Logout
             </h3>
-            <p className="text-base text-center text-gray-600 mb-6 font-light">
+            <p className="text-base text-left text-gray-600 mb-6 font-light">
               Are you sure you want to log out of your account? Your session
               will be terminated.
             </p>
 
-            <div className="flex flex-row-reverse justify-end items-center gap-4">
+            <div className="flex flex-row-reverse justify-between items-center gap-4">
               <button
                 onClick={handleConfirmLogout}
                 disabled={isLoading}
@@ -349,7 +349,7 @@ useEffect(() => {
                     Logging out...
                   </div>
                 ) : (
-                  "Yes, Log Me Out"
+                  "Log Out"
                 )}
               </button>
               <button

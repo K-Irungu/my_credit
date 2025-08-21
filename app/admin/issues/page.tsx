@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 interface Reporter {
   _id: string;
-  REF: string; // The unique reference number for the reporter
+  REF: string; 
 }
 
 const Issues = () => {
@@ -349,119 +349,121 @@ const Issues = () => {
     <div className="flex flex-col p-6 space-y-6 bg-white border border-gray-200 rounded-lg h-[calc(100vh-100px)] overflow-y-auto">
       <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
       {/* Search, sort, filter controls */}
-      <div className=" flex flex-col lg:flex-row items-start lg:items-center justify-between shrink-0">
-        <div className="relative ">
-          <input
-            type="text"
-            placeholder="Search issues..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2.5 border border-[#E0E0E0]  hover:border-gray-400 rounded-lg w-full focus:outline-none focus:ring-0.5 focus:ring-[#ffde17] focus:border-[#ffde17] transition-all duration-200 text-sm"
-          />
-          <svg
-            className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            ></path>
-          </svg>
-        </div>
+   <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 lg:gap-0 shrink-0">
+  {/* Search Input */}
+  <div className="relative w-full lg:w-auto">
+    <input
+      type="text"
+      placeholder="Search issues..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="pl-10 pr-4 py-2.5 border border-[#E0E0E0] hover:border-gray-400 rounded-lg w-full focus:outline-none focus:ring-0.5 focus:ring-[#ffde17] focus:border-[#ffde17] transition-all duration-200 text-sm"
+    />
+    <svg
+      className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      ></path>
+    </svg>
+  </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-          <div className="relative flex items-center gap-2">
-            <div className="relative">
-              <select
-                value={sortColumn}
-                onChange={(e) => handleSort(e.target.value)}
-                className="appearance-none bg-white border border-[#E0E0E0] text-gray-700 py-2.5 pl-4 pr-10 rounded-lg leading-tight focus:outline-none focus:ring-0.5 focus:ring-[#ffde17] focus:border-[#ffde17] hover:border-gray-400 cursor-pointer transition-all duration-200 text-sm min-w-[140px]"
-              >
-                <option value="">Sort By</option>
-                <option value="status">Status</option>
-                <option value="implicatedPersonel.firstName">Personnel</option>
-                <option value="malpractice.type">Type</option>
-                <option value="createdAt">Date</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <GoChevronDown className="h-4 w-4" />
-              </div>
-            </div>
-
-            <button
-              onClick={() =>
-                setSortDirection(sortDirection === "asc" ? "desc" : "asc")
-              }
-              className={`w-40 flex items-center justify-center cursor-pointer px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium gap-2
-    ${
-      sortColumn
-        ? "bg-[#fff7d6] border-[#ffde17] text-[#713f12] hover:bg-[#ffe3a8] hover:border-[#ffde17] shadow-sm"
-        : "bg-gray-50 border-[#E0E0E0] text-gray-400 cursor-not-allowed"
-    }`}
-              disabled={!sortColumn}
-            >
-              {sortDirection === "asc" ? "Ascending Order" : "Descending Order"}
-            </button>
-          </div>
-          <div className="relative">
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="
-      appearance-none bg-white border border-[#E0E0E0] text-gray-700
-      py-2.5 pl-4 pr-10 rounded-lg leading-tight text-sm min-w-[120px]
-      focus:outline-none focus:ring-0.5 focus:ring-[#ffde17] focus:border-[#ffde17]
-      hover:border-gray-400 cursor-pointer transition-all duration-200
-    "
-            >
-              <option value="">Filter By</option>
-              <option value="pending">Pending</option>
-              <option value="resolved">Resolved</option>
-              <option value="closed">Closed</option>
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-              <GoChevronDown className="h-4 w-4" />
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              setSearchTerm("");
-              setSortColumn("");
-              setSortDirection("asc");
-              setFilterStatus("");
-            }}
-            className={`cursor-pointer px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium flex items-center gap-2
-    ${
-      searchTerm || sortColumn || filterStatus
-        ? "bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
-        : "bg-gray-50 border-[#E0E0E0] text-gray-400 cursor-not-allowed"
-    }`}
-            disabled={!searchTerm && !sortColumn && !filterStatus}
-          >
-            <IoCloseOutline className="w-4 h-4" />
-            Clear Filters
-          </button>
-          <button
-            onClick={handleDownloadAll}
-            disabled={isDownloading}
-            className={`cursor-pointer px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium flex items-center gap-2
-    ${
-      isDownloading
-        ? "bg-gray-50 border-[#E0E0E0] text-gray-400 cursor-not-allowed"
-        : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
-    }`}
-          >
-            <HiOutlineDownload className="w-4 h-4" />
-            {isDownloading ? "Downloading..." : "Download All Issues"}
-          </button>
+  {/* Controls */}
+  <div className="flex flex-wrap items-center justify-between gap-2 w-full lg:w-auto lg:mt-0">
+    <div className="relative flex flex-col sm:flex-row items-center w-full md:w-auto gap-2">
+      <div className="relative w-full sm:w-auto">
+        <select
+          value={sortColumn}
+          onChange={(e) => handleSort(e.target.value)}
+          className="appearance-none bg-white border border-[#E0E0E0] text-gray-700 py-2.5 pl-4 pr-10 rounded-lg leading-tight focus:outline-none focus:ring-0.5 focus:ring-[#ffde17] focus:border-[#ffde17] hover:border-gray-400 cursor-pointer transition-all duration-200 text-sm min-w-[140px] w-full"
+        >
+          <option value="">Sort By</option>
+          <option value="status">Status</option>
+          <option value="implicatedPersonel.firstName">Personnel</option>
+          <option value="malpractice.type">Type</option>
+          <option value="createdAt">Date</option>
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <GoChevronDown className="h-4 w-4" />
         </div>
       </div>
+
+      <button
+        onClick={() =>
+          setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+        }
+        className={`w-full sm:w-40 flex items-center justify-center cursor-pointer px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium gap-2
+          ${
+            sortColumn
+              ? "bg-[#fff7d6] border-[#ffde17] text-[#713f12] hover:bg-[#ffe3a8] hover:border-[#ffde17] shadow-sm"
+              : "bg-gray-50 border-[#E0E0E0] text-gray-400 cursor-not-allowed"
+          }`}
+        disabled={!sortColumn}
+      >
+        {sortDirection === "asc" ? "Ascending Order" : "Descending Order"}
+      </button>
+    </div>
+    <div className="relative w-full sm:w-auto">
+      <select
+        value={filterStatus}
+        onChange={(e) => setFilterStatus(e.target.value)}
+        className="
+            appearance-none bg-white border border-[#E0E0E0] text-gray-700
+            py-2.5 pl-4 pr-10 rounded-lg leading-tight text-sm min-w-[120px] w-full
+            focus:outline-none focus:ring-0.5 focus:ring-[#ffde17] focus:border-[#ffde17]
+            hover:border-gray-400 cursor-pointer transition-all duration-200
+          "
+      >
+        <option value="">Filter By</option>
+        <option value="pending">Pending</option>
+        <option value="resolved">Resolved</option>
+        <option value="closed">Closed</option>
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+        <GoChevronDown className="h-4 w-4" />
+      </div>
+    </div>
+
+    <button
+      onClick={() => {
+        setSearchTerm("");
+        setSortColumn("");
+        setSortDirection("asc");
+        setFilterStatus("");
+      }}
+      className={`w-full sm:w-auto cursor-pointer px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2
+          ${
+            searchTerm || sortColumn || filterStatus
+              ? "bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
+              : "bg-gray-50 border-[#E0E0E0] text-gray-400 cursor-not-allowed"
+          }`}
+      disabled={!searchTerm && !sortColumn && !filterStatus}
+    >
+      <IoCloseOutline className="w-4 h-4" />
+      Clear Filters
+    </button>
+    <button
+      onClick={handleDownloadAll}
+      disabled={isDownloading}
+      className={`w-full sm:w-auto cursor-pointer px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2
+          ${
+            isDownloading
+              ? "bg-gray-50 border-[#E0E0E0] text-gray-400 cursor-not-allowed"
+              : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
+          }`}
+    >
+      <HiOutlineDownload className="w-4 h-4" />
+      {isDownloading ? "Downloading..." : "Download All Issues"}
+    </button>
+  </div>
+</div>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
@@ -491,7 +493,7 @@ const Issues = () => {
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 font-semibold hidden lg:table-cell"
+                    className="px-6 py-3 font-semibold hidden md:table-cell"
                   >
                     Malpractice Location
                   </th>
@@ -522,9 +524,7 @@ const Issues = () => {
                         day: "numeric",
                       })}
                     </td>
-                    <td
-                      className={` font-semibold text-center`}
-                    >
+                    <td className={` font-semibold text-center`}>
                       <div
                         className={`${getStatusBadge(
                           issue.status
@@ -534,33 +534,31 @@ const Issues = () => {
                       </div>
                     </td>
 
-
-                    <td className="px-6 py-4 capitalize hidden lg:table-cell">
+                    <td className="px-6 py-4 capitalize hidden md:table-cell">
                       {issue.malpractice.location}
                     </td>
 
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-start gap-5">
+                        <button
+                          type="button"
+                          className="cursor-pointer text-black font-semibold border-[0.5px] border-gray-300 rounded-md px-4 py-2 transform active:scale-95 transition-transform duration-200 flex items-center gap-2 hover:bg-gray-100 hover:border-gray-400"
+                          onClick={() => handleViewIssue(issue)}
+                        >
+                          <FaEye />
+                          View
+                        </button>
 
-                   <td className="px-6 py-4">
-  <div className="flex items-center justify-start gap-5">
-    <button
-      type="button"
-      className="cursor-pointer text-black font-semibold border-[0.5px] border-gray-300 rounded-md px-4 py-2 transform active:scale-95 transition-transform duration-200 flex items-center gap-2 hover:bg-gray-100 hover:border-gray-400"
-      onClick={() => handleViewIssue(issue)}
-    >
-      <FaEye />
-      View
-    </button>
-
-    <button
-      type="button"
-      onClick={() => handleManage(issue.REF)}
-      className="hidden lg:flex cursor-pointer bg-gray-900 text-[#ffde17] px-4 py-2 rounded-md font-semibold hover:bg-gray-900 transition-colors duration-200 transform active:scale-95  items-center gap-2 hover:text-[#ffea40] hover:shadow-lg"
-    >
-      <LuClipboardList />
-      Manage
-    </button>
-  </div>
-</td>
+                        <button
+                          type="button"
+                          onClick={() => handleManage(issue.REF)}
+                          className="hidden lg:flex cursor-pointer bg-gray-900 text-[#ffde17] px-4 py-2 rounded-md font-semibold hover:bg-gray-900 transition-colors duration-200 transform active:scale-95  items-center gap-2 hover:text-[#ffea40] hover:shadow-lg"
+                        >
+                          <LuClipboardList />
+                          Manage
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
