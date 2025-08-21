@@ -94,7 +94,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
   const [isExportDropdownOpen, setIsExportDropdownOpen] = useState(false);
   // State for loading status during file generation
   const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
+  const router = useRouter();
 
   // useRef hook to create a reference to the modal content container
   const modalRef = useRef<HTMLDivElement>(null);
@@ -170,9 +170,8 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
     }
   };
 
-    const handleManage = () => {
-
-  router.push(`/admin/issue-management?ref=${issue.REF}`);
+  const handleManage = () => {
+    router.push(`/admin/issue-management?ref=${issue.REF}`);
   };
   // Helper function to get the status badge styles
   const getStatusBadge = (status: string) => {
@@ -434,12 +433,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
     } finally {
       setIsLoading(false);
     }
-
-
-    
   };
-
-
 
   return (
     // The main modal container with transition for the backdrop
@@ -448,7 +442,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
         isAnimating ? "bg-opacity-50" : "bg-opacity-0"
       }`}
     >
-      <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="flex items-center justify-center min-h-screen p-4 sm:p-8">
         {/* Modal content with combined transform and opacity transitions */}
         <div
           ref={modalRef}
@@ -457,7 +451,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
           }`}
         >
           {/* Modal Header */}
-          <div className="flex items-center justify-between p-4 border-b rounded-t border-[#E0E0E0] bg-[#ffde17] text-black sticky top-0 z-10 ">
+          <div className="flex items-center justify-between p-3 sm:p-4 border-b rounded-t border-[#E0E0E0] bg-[#ffde17] text-black sticky top-0 z-10 ">
             <h3 className="text-xl font-medium flex items-center">
               Issue:{" "}
               <span className="ml-2 font-mono text-base md:text-lg">
@@ -491,105 +485,116 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
             </button>
           </div>
 
-          {/* Modal Body */}
-          <div className="p-6 space-y-6 text-sm md:text-base">
+
+
+      {/* Modal Body */}
+          <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <p className="leading-relaxed text-[#333333]">
-                <span className="font-bold text-black">Status:</span>{" "}
+              <div className="flex justify-between items-center sm:block">
+              <h4 className="text-sm font-semibold text-gray-800 mb-2 sm:text-base sm:font-bold sm:text-black sm:flex sm:items-center">
+                Status
+              </h4>
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium ${getStatusBadge(
+                  className={`inline-flex items-center px-2 py-1 rounded-sm text-xs font-semibold ${getStatusBadge(
                     issue.status
                   )}`}
                 >
                   {issue.status}
                 </span>
-              </p>
-              <p className="leading-relaxed text-[#333333]">
-                <span className="font-bold text-black">
-                  Type of Malpractice:
-                </span>{" "}
-                {issue.malpractice.type}
-              </p>
-              <p className="leading-relaxed text-[#333333]">
-                <span className="font-bold text-black">Is Ongoing:</span>{" "}
-                {issue.malpractice.isOngoing}
-              </p>
-              <p className="leading-relaxed text-[#333333]">
-                <span className="font-bold text-black">
-                  Location of Malpractice:
-                </span>{" "}
-                {issue.malpractice.location}
-              </p>
-              {/* <p className="leading-relaxed text-[#333333]">
-                <span className="font-bold text-black">Reporter:</span>{" "}
-                {issue.reporter.REF}
-              </p> */}
-              <p className="leading-relaxed text-[#333333]">
-                <span className="font-bold text-black">Source:</span>{" "}
-                {issue.source}
-              </p>
+              </div>
+              <div className="flex justify-between items-center sm:block">
+                <span className="text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">
+                  Malpractice Type:
+                </span>
+                <span className="capitalize text-xs text-right max-w-[50%] sm:max-w-none truncate sm:text-sm text-gray-700 sm:text-[#333333]">
+                  {issue.malpractice.type}
+                </span>
+              </div>
+              <div className="flex justify-between items-center sm:block">
+                <span className="text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">Ongoing:</span>
+                <span className="capitalize text-xs sm:text-sm text-gray-700 sm:text-[#333333]">
+                  {issue.malpractice.isOngoing}
+                </span>
+              </div>
+              <div className="flex justify-between items-center sm:block">
+                <span className=" capitalize text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">
+                  Location:
+                </span>
+                <span className="text-xs text-right max-w-[50%] sm:max-w-none truncate sm:text-sm text-gray-700 sm:text-[#333333]">
+                  {issue.malpractice.location}
+                </span>
+              </div>
+              <div className="flex justify-between items-center sm:block">
+                <span className="text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">Source:</span>
+                <span className="capitalize text-xs sm:text-sm text-gray-700 sm:text-[#333333]">
+                  {issue.source}
+                </span>
+              </div>
             </div>
-
+            
             <div className="border-t border-[#E0E0E0] pt-4">
-              <h4 className="text-md font-bold text-black mb-2 flex items-center">
-                {/* <FileText className="w-4 h-4 mr-2" /> */}
+              <h4 className="text-sm font-semibold text-gray-800 mb-2 sm:text-base sm:font-bold sm:text-black sm:flex sm:items-center">
                 Description
               </h4>
-              <p className="leading-relaxed text-[#333333]">
+              <p className="text-xs leading-relaxed text-gray-700 sm:text-sm sm:text-[#333333]">
                 {issue.malpractice.description}
               </p>
             </div>
-
+            
             <div className="border-t border-[#E0E0E0] pt-4">
-              <h4 className="text-md font-bold text-black mb-2 flex items-center">
-                {/* <User className="w-4 h-4 mr-2" /> */}
+              <h4 className="text-sm font-semibold text-gray-800 mb-2 sm:text-base sm:font-bold sm:text-black sm:flex sm:items-center">
                 Implicated Personnel
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p className="leading-relaxed text-[#333333]">
-                  <span className="font-bold text-black">Name:</span>{" "}
-                  {issue.implicatedPersonel.firstName}{" "}
-                  {issue.implicatedPersonel.lastName}
-                </p>
-                <p className="leading-relaxed text-[#333333]">
-                  <span className="font-bold text-black">Position:</span>{" "}
-                  {issue.implicatedPersonel.rolePosition}
-                </p>
-                <p className="leading-relaxed text-[#333333]">
-                  <span className="font-bold text-black">Work Location:</span>{" "}
-                  {issue.implicatedPersonel.companyLocation}
-                </p>
-                <p className="leading-relaxed text-[#333333]">
-                  <span className="font-bold text-black">Phone Number:</span>{" "}
-                  {issue.implicatedPersonel.phoneNumber}
-                </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex justify-between items-center sm:block">
+                  <span className="text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">Name:</span>
+                  <span className="capitalize text-xs text-right max-w-[50%] sm:max-w-none truncate sm:text-sm text-gray-700 sm:text-[#333333]">
+                    {issue.implicatedPersonel.firstName} {issue.implicatedPersonel.lastName}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center sm:block">
+                  <span className="text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">Position:</span>
+                  <span className="capitalize text-xs text-right max-w-[50%] sm:max-w-none truncate sm:text-sm text-gray-700 sm:text-[#333333]">
+                    {issue.implicatedPersonel.rolePosition}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center sm:block">
+                  <span className="text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">Work Location:</span>
+                  <span className="capitalize text-xs text-right max-w-[50%] sm:max-w-none truncate sm:text-sm text-gray-700 sm:text-[#333333]">
+                    {issue.implicatedPersonel.companyLocation}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center sm:block">
+                  <span className="text-xs font-medium text-gray-500 sm:text-sm sm:font-bold sm:text-black">Phone Number:</span>
+                  <span className="text-xs sm:text-sm text-gray-700 sm:text-[#333333]">
+                    {issue.implicatedPersonel.phoneNumber}
+                  </span>
+                </div>
               </div>
             </div>
-
-            {/* Attachments and actions */}
+            
+            {/* Actions section */}
             <div className="border-t border-[#E0E0E0] pt-4">
-              <h4 className="text-md font-bold text-black mb-2">Actions</h4>
-              <div className="flex flex-wrap items-center gap-4">
+              <h4 className="text-sm font-semibold text-gray-800 mb-2 sm:text-base sm:font-bold sm:text-black">
+                Actions
+              </h4>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                 {issue.filename && (
                   <a
                     href={`/uploads/${issue.filename}`}
                     download={issue.filename}
-                    className="flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] transform active:scale-95 transition-all duration-200"
+                    className="flex w-full sm:w-auto justify-center sm:justify-start items-center px-3 py-2 text-xs sm:text-sm font-medium text-gray-900 bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] transform active:scale-95 transition-all duration-200"
                     aria-label="Download attachment"
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download Attached File
                   </a>
                 )}
-
-                {/* New dropdown for export options */}
-                <div className="relative">
+                <div className="relative w-full sm:w-auto">
                   <button
-                    onClick={() =>
-                      setIsExportDropdownOpen(!isExportDropdownOpen)
-                    }
+                    onClick={() => setIsExportDropdownOpen(!isExportDropdownOpen)}
                     disabled={isLoading}
-                    className="flex  cursor-pointer items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] transform active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex w-full sm:w-auto cursor-pointer justify-center sm:justify-start items-center px-3 py-2 text-xs sm:text-sm font-medium text-gray-900 bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] transform active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Save report"
                   >
                     {isLoading ? (
@@ -619,30 +624,25 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
                     Save This Issue
                   </button>
                   {isExportDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
-                      <div
-                        className="py-1"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="options-menu"
-                      >
+                    <div className="absolute right-0 sm:right-auto sm:left-0 mt-2 w-full sm:w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                      <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                         <button
                           onClick={() => handleExport("pdf")}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
                           role="menuitem"
                         >
                           Save as PDF
                         </button>
                         <button
                           onClick={handleExportToExcel}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
                           role="menuitem"
                         >
                           Save as Excel
                         </button>
                         <button
                           onClick={() => handleExport("png")}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
                           role="menuitem"
                         >
                           Save as PNG
@@ -653,37 +653,41 @@ const IssueModal: React.FC<IssueModalProps> = ({ isOpen, onClose, issue }) => {
                 </div>
               </div>
             </div>
-
-            <div className="border-t border-[#E0E0E0] pt-4 text-xs text-gray-500">
+            
+            <div className="border-t border-[#E0E0E0] pt-4">
               <div className="flex justify-between flex-col md:flex-row space-y-2 md:space-y-0">
-                <p>
-                  <span className="font-semibold text-black">
+                <div className="flex justify-between items-center sm:block">
+                  <span className="text-xs font-medium text-gray-500 sm:text-xs sm:font-semibold sm:text-black">
                     Date Submitted:
-                  </span>{" "}
-                  {formatDate(issue.createdAt)}
-                </p>
-                <p>
-                  <span className="font-semibold text-black">
+                  </span>
+                  <span className="text-xs text-gray-700 sm:text-xs sm:text-gray-500">
+                    {formatDate(issue.createdAt)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center sm:block">
+                  <span className="text-xs font-medium text-gray-500 sm:text-xs sm:font-semibold sm:text-black">
                     Last Updated:
-                  </span>{" "}
-                  {formatDate(issue.updatedAt)}
-                </p>
+                  </span>
+                  <span className="text-xs text-gray-700 sm:text-xs sm:text-gray-500">
+                    {formatDate(issue.updatedAt)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center gap-3 p-4 border-t border-[#E0E0E0] rounded-b sticky bottom-0 z-10 bg-white justify-between">
+          <div className="flex items-center gap-3 p-3 sm:p-4 border-t border-[#E0E0E0] rounded-b sticky bottom-0 z-10 bg-white justify-between flex-col sm:flex-row">
             <button
               type="button"
-              className="w-32 cursor-pointer py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] focus:z-10 focus:ring-0.5 focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
+              className="w-full sm:w-32 mb-2 sm:mb-0 py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17] transform active:scale-95 transition-all duration-200"
               onClick={onClose}
             >
               Close
             </button>
             <button
               onClick={handleManage}
-              className="w-32 cursor-pointer flex items-center justify-center py-2.5 px-5 text-sm font-medium text-[#ffde17] bg-gray-900 rounded-lg hover:bg-gray-800 focus:ring-0.5 focus:outline-none focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
+              className="w-full sm:w-32 py-2.5 px-5 text-sm font-medium text-[#ffde17] bg-gray-900 rounded-lg hover:bg-gray-800 focus:ring-0.5 focus:outline-none focus:ring-[#ffde17] transform active:scale-95 transition-all duration-200"
               aria-label="Open manage view"
             >
               Manage Issue
