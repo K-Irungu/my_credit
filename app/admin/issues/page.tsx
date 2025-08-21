@@ -79,6 +79,14 @@ const Issues = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
   // Helper function to get nested property value from an object
   const getNestedValue = (obj: any, path: string) => {
     return path.split(".").reduce((current, key) => current?.[key], obj);
@@ -265,17 +273,84 @@ const Issues = () => {
     // Call the helper function
     await fetchIssuesAndExportToExcel(OUTPUT_FILE);
   }
+
+  if (loading) {
+    return (
+      <div className="flex flex-col p-6 space-y-4 bg-white border border-gray-200 rounded-lg h-[calc(100vh-100px)] overflow-y-auto">
+        {/* Page Title Skeleton */}
+        <div className="h-8 w-48 bg-gray-200 rounded-lg animate-pulse"></div>
+
+        {/* Controls Skeleton */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between shrink-0">
+          <div className="h-10 w-full lg:w-64 bg-gray-200 rounded-lg animate-pulse mb-4 lg:mb-0"></div>
+          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <div className="h-10 w-28 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="h-10 w-48 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="h-10 w-28 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="h-10 w-40 bg-gray-200 rounded-lg animate-pulse"></div>
+          </div>
+        </div>
+
+        {/* Table Skeleton */}
+        <div className="flex-1 overflow-y-auto relative overflow-x-auto sm:rounded-lg mt-3">
+          <div className="bg-white rounded-lg animate-pulse">
+            {/* Table Header Skeleton */}
+            <div className="grid grid-cols-7 lg:grid-cols-8 gap-4 px-6 py-3 bg-gray-100 rounded-t-lg">
+              <div className="h-5 bg-gray-300 rounded col-span-1"></div>
+              <div className="h-5 bg-gray-300 rounded col-span-1"></div>
+              <div className="h-5 bg-gray-300 rounded col-span-1"></div>
+              <div className="h-5 bg-gray-300 rounded col-span-1"></div>
+              <div className="h-5 bg-gray-300 rounded col-span-1 hidden lg:block"></div>
+              <div className="h-5 bg-gray-300 rounded col-span-1 hidden lg:block"></div>
+              <div className="h-5 bg-gray-300 rounded col-span-1"></div>
+              <div className="h-5 bg-gray-300 rounded col-span-1"></div>
+            </div>
+            {/* Table Rows Skeleton */}
+            <div className="space-y-4 p-4">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="grid grid-cols-7 lg:grid-cols-8 gap-4 items-center"
+                >
+                  <div className="h-5 bg-gray-200 rounded"></div>
+                  <div className="h-5 bg-gray-200 rounded"></div>
+                  <div className="h-5 bg-gray-200 rounded"></div>
+                  <div className="h-5 bg-gray-200 rounded"></div>
+                  <div className="h-5 bg-gray-200 rounded hidden lg:block"></div>
+                  <div className="h-5 bg-gray-200 rounded hidden lg:block"></div>
+                  <div className="h-5 bg-gray-200 rounded"></div>
+                  <div className="h-5 bg-gray-200 rounded"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Pagination Skeleton */}
+        <nav className="flex items-center justify-between p-6 border-t border-[#E0E0E0] bg-gray-50 shrink-0">
+          <div className="h-5 w-48 bg-gray-200 rounded-lg animate-pulse"></div>
+          <div className="flex gap-2">
+            <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="h-10 w-10 bg-gray-200 rounded-lg animate-pulse"
+              ></div>
+            ))}
+            <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+          </div>
+        </nav>
+      </div>
+    );
+  }
   return (
     // Main container with fixed height using flexbox
-    <div className="flex flex-col h-[calc(100vh-100px)] shadow-sm rounded-lg bg-white ">
-                   <div>
-              <h1 className="text-2xl font-bold text-gray-900 px-4 pt-4">Issues</h1>
-              </div> 
+    <div className="flex flex-col p-6 space-y-6 bg-white border border-gray-200 rounded-lg h-[calc(100vh-100px)] overflow-y-auto">
+      <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
       {/* Search, sort, filter controls */}
-      <div className="p-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-[#E0E0E0] shrink-0">
-
-
-        <div className="relative w-full lg:w-80">
+      <div className=" flex flex-col lg:flex-row items-start lg:items-center justify-between shrink-0">
+        <div className="relative ">
           <input
             type="text"
             placeholder="Search issues..."
@@ -388,251 +463,258 @@ const Issues = () => {
         </div>
       </div>
 
-      {/* Scrollable content area with flex-1 to take up remaining vertical space */}
-      <div className="flex-1 overflow-y-auto relative overflow-x-auto sm:rounded-lg mt-3">
-        {/* Desktop Table */}
-        <table className="min-w-full text-sm text-left text-[#333333] border-collapse hidden md:table">
-          <thead className="text-xs uppercase bg-[#ffde17] text-black">
-            <tr>
-              <th scope="col" className="p-4">
-                <div className="flex items-center">
-                  <input
-                    id="checkbox-all"
-                    type="checkbox"
-                    className="w-4 h-4 text-black bg-white border border-[#E0E0E0] rounded focus:ring-black focus:ring-1"
-                  />
-                  <label htmlFor="checkbox-all" className="sr-only">
-                    Select all
-                  </label>
-                </div>
-              </th>
-              <th scope="col" className="px-6 py-3 font-semibold">
-                Issue ID
-              </th>
-              <th scope="col" className="px-6 py-3 font-semibold">
-                Implicated Personnel
-              </th>
-              <th scope="col" className="px-6 py-3 font-semibold">
-                Type of Malpractice
-              </th>
-              <th scope="col" className="px-6 py-3 font-semibold">
-                Location
-              </th>
-              <th scope="col" className="px-6 py-3 font-semibold">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-3 font-semibold">
-                Date Submitted
-              </th>
-              <th scope="col" className="px-6 py-3  font-semibold">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentIssues.map((issue) => (
-              <tr
-                key={issue.REF}
-                className="bg-white border-b border-[#E0E0E0] hover:bg-[#fefadd]"
-              >
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id={`checkbox-${issue.REF}`}
-                      type="checkbox"
-                      className="w-4 h-4 text-black bg-white border border-[#E0E0E0] rounded focus:ring-black focus:ring-1"
-                    />
-                    <label
-                      htmlFor={`checkbox-${issue.REF}`}
-                      className="sr-only"
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
+        <div className="lg:col-span-3 bg-white rounded-lg sm:shadow-xs sm:border sm:border-gray-200">
+          {/* Title */}
+          <div className="rounded-t-lg bg-[#ffde17] sm:bg-white">
+            <h2 className="text-lg font-semibold text-gray-900 pl-6 py-4">
+              All Issues
+            </h2>
+          </div>
+          {/* Desktop Table */}
+          <div className="overflow-x-auto rounded-t-lg hidden sm:flex">
+            <table className="min-w-full text-sm text-left text-gray-700 border-collapse">
+              <thead className="text-xs uppercase bg-[#ffde17] text-black">
+                <tr>
+                  <th scope="col" className="px-6 py-3 font-semibold">
+                    Implicated Personnel
+                  </th>
+                  <th scope="col" className="px-6 py-3 font-semibold">
+                    Type of Malpractice
+                  </th>
+                  <th scope="col" className="px-6 py-3 font-semibold">
+                    Date Submitted
+                  </th>
+                  <th scope="col" className="px-6 py-3 font-semibold">
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 font-semibold hidden lg:table-cell"
+                  >
+                    Malpractice Location
+                  </th>
+                  <th scope="col" className="px-6 py-3  font-semibold">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentIssues.map((issue) => (
+                  <tr
+                    key={issue.REF}
+                    className="bg-white border-b border-[#E0E0E0] hover:bg-[#fefadd]"
+                  >
+                    <td className="px-6 py-4">
+                      {issue.implicatedPersonel.firstName}{" "}
+                      {issue.implicatedPersonel.lastName}
+                    </td>
+
+                    <td className="px-6 py-4 capitalize">
+                      {issue.malpractice.type}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      {new Date(issue.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td
+                      className={` font-semibold text-center`}
                     >
-                      Select issue
-                    </label>
-                  </div>
-                </td>
-                <td className="px-6 py-4 font-medium text-[#333333]">
-                  #{issue.REF.slice(0, 8)}...
-                </td>
-                <td className="px-6 py-4">
-                  {issue.implicatedPersonel.firstName}{" "}
-                  {issue.implicatedPersonel.lastName}
-                </td>
-                <td className="px-6 py-4">{issue.malpractice.type}</td>
-                <td className="px-6 py-4">{issue.malpractice.location}</td>
-                <td
-                  className={` font-semibold flex items-center justify-center text-center`}
-                >
-                  <div
-                    className={`${getStatusBadge(
-                      issue.status
-                    )} p-1 rounded-sm w-full`}
-                  >
-                    {issue.status}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  {new Date(issue.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </td>
-                <td className="py-2 px-4 flex items-center justify-start gap-5">
-                  <button
-                    type="button"
-                    className="cursor-pointer text-black font-semibold border-[0.5px] border-gray-300 rounded-md px-4 py-2 transform active:scale-95 transition-transform duration-200 flex items-center gap-2
-    hover:bg-gray-100 hover:border-gray-400"
-                    onClick={() => handleViewIssue(issue)}
-                  >
-                    <FaEye />
-                    View
-                  </button>
+                      <div
+                        className={`${getStatusBadge(
+                          issue.status
+                        )} p-1 rounded-sm w-full`}
+                      >
+                        {issue.status}
+                      </div>
+                    </td>
 
-                  <button
-                    type="button"
-                    onClick={() => handleManage(issue.REF)}
-                    className="cursor-pointer bg-gray-900 text-[#ffde17] px-4 py-2 rounded-md font-semibold hover:bg-gray-900 transition-colors duration-200 transform active:scale-95 flex items-center gap-2
-    hover:text-[#ffea40] hover:shadow-lg"
-                  >
-                    <LuClipboardList />
-                    Manage
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
 
-        {/* Mobile View */}
-        <div className="md:hidden space-y-3 p-6">
-          {Array.isArray(currentIssues) &&
-            currentIssues.map((issue) => (
-              <div
-                key={issue.REF}
-                className="bg-white border border-[#E0E0E0] rounded-lg p-5 hover:shadow-sm transition-shadow duration-200"
-              >
-                <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3 mb-3">
-                  <h4 className="font-semibold text-sm text-[#333333]">
-                    Issue ID: #{issue.REF.slice(0, 8)}
-                  </h4>
-                  <div className="text-yellow-500 font-semibold text-sm">
-                    {issue.status}
-                  </div>
-                </div>
-                <div className="space-y-2 text-sm text-[#333333]">
-                  <p>
-                    <strong className="text-gray-700">
-                      Implicated Personnel:
-                    </strong>{" "}
-                    {issue.implicatedPersonel.firstName}{" "}
-                    {issue.implicatedPersonel.lastName}
-                  </p>
-                  <p>
-                    <strong className="text-gray-700">
-                      Type of Malpractice:
-                    </strong>{" "}
-                    {issue.malpractice.type}
-                  </p>
-                  <p>
-                    <strong className="text-gray-700">Location:</strong>{" "}
-                    {issue.malpractice.location}
-                  </p>
-                  <p>
-                    <strong className="text-gray-700">Date Submitted:</strong>{" "}
-                    {new Date(issue.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
-                <div className="mt-4 flex gap-3 justify-end">
-                  <button
-                    type="button"
-                    className="text-black hover:underline font-medium text-sm transition-colors duration-200"
-                    onClick={() => handleViewIssue(issue)}
-                  >
-                    View
-                  </button>
-                  <a
-                    href="#"
-                    className="bg-[#ffde17] text-black px-4 py-2 rounded-lg hover:bg-gray-900 hover:text-[#ffde17] transition-colors duration-200 text-sm font-medium"
-                  >
-                    Manage
-                  </a>
-                </div>
+                    <td className="px-6 py-4 capitalize hidden lg:table-cell">
+                      {issue.malpractice.location}
+                    </td>
+
+
+                   <td className="px-6 py-4">
+  <div className="flex items-center justify-start gap-5">
+    <button
+      type="button"
+      className="cursor-pointer text-black font-semibold border-[0.5px] border-gray-300 rounded-md px-4 py-2 transform active:scale-95 transition-transform duration-200 flex items-center gap-2 hover:bg-gray-100 hover:border-gray-400"
+      onClick={() => handleViewIssue(issue)}
+    >
+      <FaEye />
+      View
+    </button>
+
+    <button
+      type="button"
+      onClick={() => handleManage(issue.REF)}
+      className="hidden lg:flex cursor-pointer bg-gray-900 text-[#ffde17] px-4 py-2 rounded-md font-semibold hover:bg-gray-900 transition-colors duration-200 transform active:scale-95  items-center gap-2 hover:text-[#ffea40] hover:shadow-lg"
+    >
+      <LuClipboardList />
+      Manage
+    </button>
+  </div>
+</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile View */}
+          <div className="sm:hidden text-sm">
+            <>
+              <div className="max-h-[540px] overflow-y-auto space-y-4 pr-1 scroll-smooth">
+                {Array.isArray(currentIssues) &&
+                  currentIssues.map((issue) => (
+                    <div
+                      key={issue.REF}
+                      className="bg-white border border-gray-200 rounded-lg p-4 shadow-xs hover:shadow transition-shadow duration-200 mt-4"
+                    >
+                      {/* Header */}
+                      <div className="flex justify-between items-center border-b border-gray-200 pb-2 mb-2">
+                        <h4 className="font-semibold text-gray-800 text-sm truncate">
+                          REF: #{issue.REF.slice(0, 8)}...
+                        </h4>
+                        <span
+                          className={`px-2 py-1 rounded-sm text-xs font-semibold ${getStatusBadge(
+                            issue.status
+                          )}`}
+                        >
+                          {issue.status}
+                        </span>
+                      </div>
+
+                      {/* Info */}
+                      <div className="space-y-2 text-gray-700">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-gray-500">
+                            Implicated Personnel
+                          </span>
+                          <span className="text-xs text-right max-w-[50%] truncate capitalize">
+                            {issue.implicatedPersonel.firstName}{" "}
+                            {issue.implicatedPersonel.lastName}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-gray-500">
+                            Malpractice
+                          </span>
+                          <span className="text-xs text-right max-w-[50%] truncate capitalize">
+                            {issue.malpractice.type}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-gray-500">
+                            Submitted
+                          </span>
+                          <span className="text-xs text-right">
+                            {formatDate(issue.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="mt-4 flex gap-2 flex-col text-xs">
+                        <button
+                          type="button"
+                          onClick={() => handleViewIssue(issue)}
+                          className="w-full text-black font-semibold border border-gray-300 rounded-md py-2 px-4 uppercase hover:bg-gray-100 transition active:scale-95"
+                        >
+                          View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleManage(issue.REF)}
+                          className="uppercase w-full cursor-pointer bg-gray-900 text-[#ffde17]  px-4 py-2 rounded-md font-semibold hover:bg-[#ffde17] transition-colors duration-200 transform active:scale-95 hover:text-gray-900 hover:shadow-lg"
+                        >
+                          Manage
+                        </button>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            ))}
+            </>
+          </div>
+
+          {/* Pagination */}
+
+          <nav
+            className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 border-t border-[#E0E0E0] bg-gray-50 shrink-0 "
+            aria-label="Table navigation"
+          >
+            <span className="text-sm text-[#333333] mb-4 sm:mb-0">
+              Showing{" "}
+              <span className="font-semibold text-black">
+                {startIndex + 1}-
+                {Math.min(endIndex, filteredAndSortedIssues.length)}
+              </span>{" "}
+              of{" "}
+              <span className="font-semibold text-black">
+                {filteredAndSortedIssues.length}
+              </span>
+            </span>
+            <ul className="inline-flex -space-x-px text-sm">
+              <li>
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`cursor-pointer flex items-center justify-center px-4 h-10 leading-tight rounded-l-lg transition-all duration-200 ${
+                    currentPage === 1
+                      ? "text-gray-400 bg-gray-100 border border-gray-200 cursor-not-allowed"
+                      : "text-[#333333] bg-white border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17]"
+                  }`}
+                >
+                  Previous
+                </button>
+              </li>
+              {getPageNumbers().map((pageNum) => (
+                <li key={pageNum}>
+                  <button
+                    onClick={() => handlePageClick(pageNum)}
+                    className={`cursor-pointer flex items-center justify-center px-4 h-10 leading-tight border transition-all duration-200 ${
+                      currentPage === pageNum
+                        ? "text-black bg-[#ffde17] border-[#ffde17] hover:bg-[#e6c500] hover:border-[#e6c500] font-medium"
+                        : "text-[#333333] bg-white border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17]"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                </li>
+              ))}
+              <li>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`cursor-pointer flex items-center justify-center px-4 h-10 leading-tight rounded-r-lg transition-all duration-200 ${
+                    currentPage === totalPages
+                      ? "text-gray-400 bg-gray-100 border border-gray-200 cursor-not-allowed"
+                      : "text-[#333333] bg-white border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17]"
+                  }`}
+                >
+                  Next
+                </button>
+              </li>
+            </ul>
+          </nav>
         </div>
+
+        {/* The Issue Modal is rendered here, outside the main flow */}
+        {/* It will only be visible when isModalOpen is true and a selectedIssue exists */}
+        <IssueModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          issue={selectedIssue}
+        />
       </div>
-
-      {/* Pagination controls */}
-      <nav
-        className="flex items-center justify-between p-6 border-t border-[#E0E0E0] bg-gray-50 shrink-0"
-        aria-label="Table navigation"
-      >
-        <span className="text-sm text-[#333333]">
-          Showing{" "}
-          <span className="font-semibold text-black">
-            {startIndex + 1}-
-            {Math.min(endIndex, filteredAndSortedIssues.length)}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-black">
-            {filteredAndSortedIssues.length}
-          </span>
-        </span>
-        <ul className="inline-flex -space-x-px text-sm">
-          <li>
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className={`cursor-pointer flex items-center justify-center px-4 h-10 leading-tight rounded-l-lg transition-all duration-200 ${
-                currentPage === 1
-                  ? "text-gray-400 bg-gray-100 border border-gray-200 cursor-not-allowed"
-                  : "text-[#333333] bg-white border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17]"
-              }`}
-            >
-              Previous
-            </button>
-          </li>
-          {getPageNumbers().map((pageNum) => (
-            <li key={pageNum}>
-              <button
-                onClick={() => handlePageClick(pageNum)}
-                className={`cursor-pointer flex items-center justify-center px-4 h-10 leading-tight border transition-all duration-200 ${
-                  currentPage === pageNum
-                    ? "text-black bg-[#ffde17] border-[#ffde17] hover:bg-[#e6c500] hover:border-[#e6c500] font-medium"
-                    : "text-[#333333] bg-white border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17]"
-                }`}
-              >
-                {pageNum}
-              </button>
-            </li>
-          ))}
-          <li>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className={`cursor-pointer flex items-center justify-center px-4 h-10 leading-tight rounded-r-lg transition-all duration-200 ${
-                currentPage === totalPages
-                  ? "text-gray-400 bg-gray-100 border border-gray-200 cursor-not-allowed"
-                  : "text-[#333333] bg-white border border-[#E0E0E0] hover:bg-[#FFF9E0] hover:border-[#ffde17]"
-              }`}
-            >
-              Next
-            </button>
-          </li>
-        </ul>
-      </nav>
-
-      {/* The Issue Modal is rendered here, outside the main flow */}
-      {/* It will only be visible when isModalOpen is true and a selectedIssue exists */}
-      <IssueModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        issue={selectedIssue}
-      />
     </div>
   );
 };

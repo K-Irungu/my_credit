@@ -413,16 +413,17 @@ const Dashboard = () => {
               <thead className="text-xs uppercase bg-[#ffde17] text-gray-900 font-semibold">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Issue ID
+                    Implicated Personnel
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Malpractice Type
                   </th>
-                  <th scope="col" className="px-6 py-3">
-                    Status
-                  </th>
+
                   <th scope="col" className="px-6 py-3 hidden lg:table-cell">
                     Date Submitted
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Status
                   </th>
                   <th scope="col" className="px-6 py-3">
                     Actions
@@ -436,12 +437,16 @@ const Dashboard = () => {
                       key={issue.REF}
                       className="bg-white border-b border-[#E0E0E0] hover:bg-[#fefadd]"
                     >
-                    
                       <td className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                        #{issue.REF.slice(0, 8)}...
+                        {issue.implicatedPersonel.firstName}{" "}
+                        {issue.implicatedPersonel.lastName}
                       </td>
                       <td className="px-6 py-2 text-gray-700 font-medium capitalize">
                         {issue.malpractice.type.substring(0, 30)}
+                      </td>
+
+                      <td className="px-6 py-2 text-gray-700 hidden lg:table-cell">
+                        {formatDate(issue.createdAt)}
                       </td>
                       <td className="px-6 py-2">
                         <span
@@ -451,9 +456,6 @@ const Dashboard = () => {
                         >
                           {issue.status}
                         </span>
-                      </td>
-                      <td className="px-6 py-2 text-gray-700 hidden lg:table-cell">
-                        {formatDate(issue.createdAt)}
                       </td>
                       <td className="px-6 py-2 text-right">
                         <button
@@ -507,6 +509,16 @@ const Dashboard = () => {
 
                       {/* Info */}
                       <div className="space-y-2 text-gray-700">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-gray-500">
+                            Implicated Personnel
+                          </span>
+                          <span className="text-xs text-right max-w-[50%] truncate capitalize">
+                            {issue.implicatedPersonel.firstName}{" "}
+                            {issue.implicatedPersonel.lastName}
+                          </span>
+                        </div>
+
                         <div className="flex justify-between items-center">
                           <span className="text-xs font-medium text-gray-500">
                             Malpractice
