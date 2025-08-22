@@ -90,7 +90,7 @@ const SettingsModule = () => {
             <FaBell className="inline mr-2" />
             Notifications
           </button>
-          <button
+          {/* <button
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === "data"
                 ? "border-[#ffde17] text-[#333333]"
@@ -100,7 +100,7 @@ const SettingsModule = () => {
           >
             <FaDatabase className="inline mr-2" />
             Data Management
-          </button>
+          </button> */}
         </nav>
       </div>
       
@@ -149,7 +149,7 @@ const SettingsModule = () => {
         </div>
       )}
       
-      {/* Data Management Settings */}
+      {/* Data Management Settings
       {activeTab === "data" && (
         <div className="space-y-6">
           <h2 className="text-xl font-semibold text-gray-800">Data Management</h2>
@@ -171,7 +171,7 @@ const SettingsModule = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       
       {/* Save buttons */}
       <div className="mt-8 pt-6 border-t border-gray-200 flex justify-between">

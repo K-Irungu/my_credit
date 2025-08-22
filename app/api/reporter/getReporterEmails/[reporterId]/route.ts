@@ -4,7 +4,7 @@ import { getReporterEmails } from "@/controllers/reporter/getReporterEmailsContr
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { reporterId: string } }
+  { params }: { params: Promise<{ reporterId: string }> }
 ) {
     const { reporterId } = await params;
     return getReporterEmails(reporterId);

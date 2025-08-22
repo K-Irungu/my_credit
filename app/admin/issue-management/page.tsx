@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect, KeyboardEvent } from "react";
 import {
   FaTimes,
@@ -15,11 +16,20 @@ import {
 import { FiRefreshCcw } from "react-icons/fi";
 import { MdOutlineEmail } from "react-icons/md";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import issue from "@/models/issue";
 import Image from "next/image";
 import { set } from "mongoose";
+
+type ReporterEmail = {
+  _id?: string;
+  messageId?: string;
+  subject?: string;
+  text?: string;
+  html?: string;
+  createdAt?: string;
+};
 
 // Type definitions for issue and personnel
 type ImplicatedPersonnel = {
@@ -68,6 +78,7 @@ const statusSteps = [
   },
   { key: "resolved", label: "Resolved", icon: <FaCheck className="w-6 h-6" /> },
 ];
+
 // Helper to get the current step index
 const getCurrentStepIndex = (status: string) => {
   const idx = statusSteps.findIndex(
@@ -92,19 +103,19 @@ const getStatusBadge = (status: string) => {
   }
 };
 
-const IssueManagement: React.FC = () => {
+const IssueManagementPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  
   const [issueRef, setIssueRef] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [currentIssue, setCurrentIssue] = useState<Issue | null>(null);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>("details");
-
   const [statusUpdate, setStatusUpdate] = useState<string>("");
-
-  const [reporterEmails, setReporterEmails] = useState<any>(null); // Replace 'any' with your Reporter type
+  const [reporterEmails, setReporterEmails] = useState<ReporterEmail[] | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchReporter = async () => {
@@ -128,18 +139,22 @@ const IssueManagement: React.FC = () => {
     };
 
     fetchReporter();
-  }, [currentIssue?.reporter]); // Only re-run when currentIssue.reporter changes
+  }, [currentIssue?.reporter]);
 
-  // Check for ref parameter on component mount
+  // Check for ref parameter on component mount using window.location
   useEffect(() => {
-    const refParam = searchParams.get("ref");
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const refParam = urlParams.get('ref');
+    
     if (refParam) {
       setIssueRef(refParam);
       // Auto-search if ref is found in URL
       handleSearchIssueWithRef(refParam);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, []); // Empty dependency array for mount only
 
   useEffect(() => {
     if (currentIssue) {
@@ -218,9 +233,11 @@ const IssueManagement: React.FC = () => {
     setCurrentIssue(null);
     setError("");
     // Clear the URL parameter when clearing search
-    const url = new URL(window.location.href);
-    url.searchParams.delete("ref");
-    window.history.replaceState({}, "", url.toString());
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("ref");
+      window.history.replaceState({}, "", url.toString());
+    }
   };
 
   const handleSendNotification = async () => {
@@ -232,7 +249,6 @@ const IssueManagement: React.FC = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // reporter: currentIssue.reporter,
           issueRef: currentIssue.REF,
           status: currentIssue.status,
         }),
@@ -501,54 +517,52 @@ const IssueManagement: React.FC = () => {
               {/* Main Content */}
               <div className=" rounded-b-lg shadow-xs mt-6">
                 {/* Tabs */}
-<ul className="flex w-full text-sm font-medium text-center rounded-lg overflow-hidden border border-gray-200 shadow-xs">
-  {/* Details Tab */}
-  <li className="flex-1">
-    <button
-      type="button"
-      className={`w-full py-3 px-4 border-r border-gray-200 focus:outline-none transition-colors duration-200 ${
-        activeTab === "details"
-          ? "bg-gray-900 text-[#ffde17] font-semibold"
-          : "bg-white text-gray-700 hover:bg-gray-100"
-      }`}
-      onClick={() => setActiveTab("details")}
-    >
-      Details
-    </button>
-  </li>
+                <ul className="flex w-full text-sm font-medium text-center rounded-lg overflow-hidden border border-gray-200 shadow-xs">
+                  {/* Details Tab */}
+                  <li className="flex-1">
+                    <button
+                      type="button"
+                      className={`w-full py-3 px-4 border-r border-gray-200 focus:outline-none transition-colors duration-200 ${
+                        activeTab === "details"
+                          ? "bg-gray-900 text-[#ffde17] font-semibold"
+                          : "bg-white text-gray-700 hover:bg-gray-100"
+                      }`}
+                      onClick={() => setActiveTab("details")}
+                    >
+                      Details
+                    </button>
+                  </li>
 
-  {/* Communications Tab */}
-  <li className="flex-1">
-    <button
-      type="button"
-      className={`w-full py-3 px-4 border-r border-gray-200 focus:outline-none transition-colors duration-200 ${
-        activeTab === "communications"
-          ? "bg-gray-900 text-[#ffde17] font-semibold"
-          : "bg-white text-gray-700 hover:bg-gray-100"
-      }`}
-      onClick={() => setActiveTab("communications")}
-    >
-      Communications
-    </button>
-  </li>
+                  {/* Communications Tab */}
+                  <li className="flex-1">
+                    <button
+                      type="button"
+                      className={`w-full py-3 px-4 border-r border-gray-200 focus:outline-none transition-colors duration-200 ${
+                        activeTab === "communications"
+                          ? "bg-gray-900 text-[#ffde17] font-semibold"
+                          : "bg-white text-gray-700 hover:bg-gray-100"
+                      }`}
+                      onClick={() => setActiveTab("communications")}
+                    >
+                      Communications
+                    </button>
+                  </li>
 
-  {/* Attachments Tab */}
-  <li className="flex-1">
-    <button
-      type="button"
-      className={`w-full py-3 px-4 focus:outline-none transition-colors duration-200 ${
-        activeTab === "attachments"
-          ? "bg-gray-900 text-[#ffde17] font-semibold"
-          : "bg-white text-gray-700 hover:bg-gray-100"
-      }`}
-      onClick={() => setActiveTab("attachments")}
-    >
-      Attachments
-    </button>
-  </li>
-</ul>
-
-
+                  {/* Attachments Tab */}
+                  <li className="flex-1">
+                    <button
+                      type="button"
+                      className={`w-full py-3 px-4 focus:outline-none transition-colors duration-200 ${
+                        activeTab === "attachments"
+                          ? "bg-gray-900 text-[#ffde17] font-semibold"
+                          : "bg-white text-gray-700 hover:bg-gray-100"
+                      }`}
+                      onClick={() => setActiveTab("attachments")}
+                    >
+                      Attachments
+                    </button>
+                  </li>
+                </ul>
 
                 {/* Tab Content */}
                 <div className="rounded-b-lg mt-6">
@@ -825,7 +839,7 @@ const IssueManagement: React.FC = () => {
 
                         {reporterEmails && reporterEmails.length > 0 ? (
                           <div className="space-y-3 sm:space-y-4">
-                            {reporterEmails.map((email) => {
+                            {reporterEmails.map((email: ReporterEmail) => {
                               // Safely get message content
                               const messageContent =
                                 email.text?.trim() ||
@@ -971,6 +985,6 @@ const IssueManagement: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-export default IssueManagement;
+export default IssueManagementPage;

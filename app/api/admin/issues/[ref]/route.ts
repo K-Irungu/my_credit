@@ -1,79 +1,22 @@
-import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import IssueModel from "@/models/issue";
-import { updateIssueController } from '@/controllers/admin/issues/updateIssueController';
+import { updateIssueController } from "@/controllers/admin/issues/updateIssueController";
+import { getIssueByRef } from "@/controllers/admin/issues/getIssueByREFController";
 
-
-type ImplicatedPersonnel = {
-  firstName: string;
-  lastName: string;
-  companyLocation: string;
-  rolePosition: string;
-  phoneNumber: string;
-};
-
-type Malpractice = {
-  type: string;
-  location: string;
-  description: string;
-  isOngoing: string;
-};
-
-export type IssueType = {
-  _id: string;
-  implicatedPersonel: ImplicatedPersonnel;
-  malpractice: Malpractice;
-  reporter: string;
-  status: string;
-  source: string;
-  filename: string;
-  REF: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
-
+// GET issue by REF
 export async function GET(
   req: Request,
-  { params }: { params: { ref: string } }
+  { params }: { params: Promise<{ ref: string }> }
 ) {
   const { ref } = await params;
 
-  try {
-    await connectToDB();
-    const issue = await IssueModel.findOne({ REF: ref }).lean<IssueType>();
-
-    if (!issue) {
-      return NextResponse.json(
-        {
-          status: "error",
-          message: "Issue not found. Please check the REF and try again.",
-          data: null,
-        },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(
-      {
-        status: "success",
-        message: "Issue retrieved successfully.",
-        data: issue,
-      },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      {
-        status: "error",
-        message: "Server error. Please try again later.",
-        data: null,
-      },
-      { status: 500 }
-    );
-  }
+  return await getIssueByRef(ref);
 }
 
-export async function PUT(req: Request, { params }: { params: { ref: string } }) {
-  return await updateIssueController(req, params);
+// UPDATE issue by REF
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ ref: string }> }
+) {
+    const { ref } = await params;
+
+  return await updateIssueController(req, { ref });
 }
