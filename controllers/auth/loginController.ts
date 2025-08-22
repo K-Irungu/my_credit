@@ -75,33 +75,33 @@ export async function login(
       };
     }
 
-    // 3) Check for active session
-    const existing = await findActiveSessionForUser(admin._id.toString());
-    if (existing) {
-      logger.warn("Login attempt denied - already logged in on another device");
-      await recordAuditTrail({
-        browser,
-        ipAddress,
-        deviceId,
-        activity: "Login attempt denied - already logged in on another device",
-        endpoint,
-        userDetails: {
-          userId: admin._id,
-          model: "Admin",
-          name: admin.fullName,
-          role: admin.role,
-        },
-        dataInTransit: {
-          attemptedDeviceId: deviceId,
-          currentDeviceId: existing.deviceId,
-        },
-      });
-      return {
-        status: 403,
-        message: "You are already logged in on another device.",
-        data: null,
-      };
-    }
+    // // 3) Check for active session
+    // const existing = await findActiveSessionForUser(admin._id.toString());
+    // if (existing) {
+    //   logger.warn("Login attempt denied - already logged in on another device");
+    //   await recordAuditTrail({
+    //     browser,
+    //     ipAddress,
+    //     deviceId,
+    //     activity: "Login attempt denied - already logged in on another device",
+    //     endpoint,
+    //     userDetails: {
+    //       userId: admin._id,
+    //       model: "Admin",
+    //       name: admin.fullName,
+    //       role: admin.role,
+    //     },
+    //     dataInTransit: {
+    //       attemptedDeviceId: deviceId,
+    //       currentDeviceId: existing.deviceId,
+    //     },
+    //   });
+    //   return {
+    //     status: 403,
+    //     message: "You are already logged in on another device.",
+    //     data: null,
+    //   };
+    // }
 
     // 4) Create new session
     const { sessionId, expiresAt } = await createSession({
