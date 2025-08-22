@@ -5,7 +5,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/FooterBackup";
 import MainTitle from "@/components/MainTitle";
 import { Toaster } from "react-hot-toast";
-import { SessionProvider } from "next-auth/react";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper"; // Import the new wrapper component
 
 

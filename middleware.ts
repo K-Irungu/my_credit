@@ -17,6 +17,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   // Specify the paths this middleware should protect.
-  matcher: ["/api/admin/:path*", "/admin/:path*"]
+  matcher: ["/api/admin/:path*"]
   // matcher: "/admin/:path*"
 };
