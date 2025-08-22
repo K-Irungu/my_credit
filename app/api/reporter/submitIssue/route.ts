@@ -1,7 +1,19 @@
 import { submitIssue } from "@/controllers/reporter/submitIssueController";
 import { NextResponse } from "next/server";
 
+// app/api/upload/route.ts
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "20mb", 
+    },
+  },
+};
+
+
 export async function POST(req: Request) {
+
+  
   try {
     const formData = await req.formData();
 
