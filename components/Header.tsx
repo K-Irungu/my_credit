@@ -13,7 +13,7 @@ const Header = () => {
   // ====== Navigation Menu Items ======
   const menuItems = [
     { name: "Home", href: "/", current: true },
-    { name: "Fill Whistleblower Form", href: "form", current: false },
+    { name: "Fill Whistleblower Form", href: "/form", current: false },
   ];
 
   return (
