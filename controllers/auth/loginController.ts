@@ -16,12 +16,46 @@ export async function login(
   email: string,
   password: string,
   deviceId: string,
+  reCaptchaValue: string,
   context: Context
 ) {
   const { browser, ipAddress, endpoint } = context;
 
   try {
     await connectToDB();
+
+    const reCaptchaResponse = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${reCaptchaValue}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      }
+    );
+
+    const reCaptchaData = await reCaptchaResponse.json();
+
+    if (!reCaptchaData.success) {
+      logger.warn(`Login failed: Invalid reCAPTCHA`);
+      await recordAuditTrail({
+        browser,
+        ipAddress,
+        deviceId: null,
+        activity: `Login failed: Invalid reCAPTCHA`,
+        endpoint,
+        userDetails: {
+          userId: null,
+          model: "Unknown",
+          name: null,
+          role: null,
+        },
+        dataInTransit: { emailEntered: email },
+      });
+      return {
+        status: 401,
+        message: "Login failed: Invalid reCAPTCHA",
+        data: null,
+      };
+    }
 
     // 1) Find admin by email
     const admin = await Admin.findOne({ email });

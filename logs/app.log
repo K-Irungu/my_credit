@@ -1,0 +1,10 @@
+{"email":null,"endpoint":"/api/reporter/submitIssue","ipAddress":"::1","level":"info","message":"Starting reporter creation process","timestamp":"2025-08-22T14:19:51.370Z"}
+{"email":null,"isAnonymous":true,"level":"info","message":"New reporter created successfully","reporterId":"68a87c87ca5703a81d5bc00a","reporterREF":"1ebedd4d-fd8b-4152-b002-a70ce905c1f4","timestamp":"2025-08-22T14:19:51.719Z"}
+{"level":"info","message":"Preparing alert email for new issue submission","timestamp":"2025-08-22T14:19:52.739Z"}
+{"level":"info","message":"Sending email","subject":"New Issue Submitted to Whistleblower Portal","timestamp":"2025-08-22T14:19:52.988Z","to":"dev@tierdata.co.ke"}
+{"level":"info","message":"Email sent","messageId":"<49f1bf83-c73d-0910-18e0-d93c93237bb2@whistleblow.mycredit.co.ke>","timestamp":"2025-08-22T14:19:58.944Z"}
+{"level":"info","message":"Alert email successfully sent to admin: dev@tierdata.co.ke","timestamp":"2025-08-22T14:19:59.174Z"}
+{"level":"warn","message":"Failed login attempt: Admin with email: (kirungu481@gmail.com) not found.","timestamp":"2025-08-25T08:00:09.222Z"}
+{"level":"warn","message":"Login failed: Invalid reCAPTCHA","timestamp":"2025-08-25T08:04:56.519Z"}
+{"level":"warn","message":"Login failed: Invalid reCAPTCHA","timestamp":"2025-08-25T08:05:28.456Z"}
+{"level":"info","message":"Admin CEO successfully logged in","timestamp":"2025-08-25T08:14:22.671Z"}

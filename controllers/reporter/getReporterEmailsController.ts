@@ -26,8 +26,7 @@ export async function getReporterEmails(reporterId: string) {
       .sort({ date: -1 }) // Sort by date descending (newest first)
       .lean(); // Convert to plain JavaScript objects
 
-      console.log(emails)
-
+      // console.log(emails)
     // Return the emails
     return NextResponse.json(emails);
   } catch (error) {

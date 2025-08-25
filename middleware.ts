@@ -10,9 +10,11 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
+
+
   // The session ID exists, so we let the request continue.
   // The server component or API route will perform the database validation.
-  return NextResponse.next();
+  // return NextResponse.redirect(new URL(req.url, req.url));
 }
 
 export const config = {

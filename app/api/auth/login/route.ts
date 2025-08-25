@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
 import { login } from "@/controllers/auth/loginController";
 
-export async function POST(req: Request) {
+export async function POST(req: Request) { 
+  const secret_key = process.env.SITE_KEY;
+
+  console.log("Secret Key:", secret_key); // Debugging line
   try {
     // 1) Validate input
-    const { email, password, deviceId, browser } = await req.json();
-    if (!email || !password || !deviceId || !browser) {
+    const { email, password, deviceId, browser, reCaptchaValue } = await req.json();
+
+    if (!email || !password || !deviceId || !browser || !reCaptchaValue) {
       return NextResponse.json(
-        { status: 400, message: "Email, password and deviceId are required", data: null },
+        { status: 400, message: "Email, password, deviceId, browser and reCaptchaValue are required", data: null },
         { status: 400 }
       );
     }
+
+    // console.log(reCaptchaValue)
 
     // 2) Get IP address
     const ipAddress =
@@ -22,7 +28,7 @@ export async function POST(req: Request) {
     const endpoint = "/api/auth/login";
 
     // 4) Authenticate user
-    const result = await login(email, password, deviceId, {
+    const result = await login(email, password, deviceId, reCaptchaValue, {
       browser,
       ipAddress,
       endpoint,
